@@ -5,6 +5,8 @@ extends CanvasLayer
 
 @onready var _health_bar: HealthBar = %HealthBar
 @onready var _health_label: Label = %HealthLabel
+@onready var _armor_bar: ArmorBar = %ArmorBar
+@onready var _armor_label: Label = %ArmorLabel
 @onready var _wave_label: Label = %WaveLabel
 @onready var _hint_label: Label = %HintLabel
 @onready var _defeated_label: Label = %DefeatedLabel
@@ -18,6 +20,11 @@ func set_health(current: int, maximum: int) -> void:
 	if maximum > 0:
 		percent = roundi(float(current) / float(maximum) * 100.0)
 	_health_label.text = "%d / %d | %d%%" % [current, maximum, percent]
+
+
+func set_armor(current: int, maximum: int) -> void:
+	_armor_bar.set_fraction(current, maximum)
+	_armor_label.text = "%d / %d" % [current, maximum]
 
 
 func set_wave(wave: int) -> void:

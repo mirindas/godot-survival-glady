@@ -50,6 +50,7 @@ Call down, signal up. The arena wires the player's `health_changed` and `died` t
 |---|---|
 | Movement and both swings | `res://player/player.gd` |
 | Hit points | `HealthComponent` on that actor |
+| Armor | `ArmorComponent` on the player |
 | Active frames of a swing | `Hitbox` |
 | Receiving a hit | `Hurtbox` |
 | Who is in the room | `res://levels/arena.gd` |

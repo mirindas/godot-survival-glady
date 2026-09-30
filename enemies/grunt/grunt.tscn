@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://c8hitboxcomp2" path="res://components/hitbox.gd" id="4_hitbox"]
 [ext_resource type="Script" uid="uid://a9knockbackgd1" path="res://components/knockback.gd" id="5_knock"]
 [ext_resource type="PackedScene" uid="uid://f5healthpickscn" path="res://pickups/health/health_pickup.tscn" id="6_drop"]
+[ext_resource type="PackedScene" uid="uid://a7armorpickscn" path="res://pickups/armor/armor_pickup.tscn" id="7_armor"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(40, 48)
@@ -22,6 +23,7 @@ collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_grunt")
 health_drop_scene = ExtResource("6_drop")
+armor_drop_scene = ExtResource("7_armor")
 
 [node name="BodyShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_body")
@@ -51,6 +53,7 @@ monitoring = false
 monitorable = false
 script = ExtResource("4_hitbox")
 damage = 12
+armor_reduction = 5
 damage_color = Color(0.89, 0.22, 0.2, 1)
 damage_font_size = 20
 

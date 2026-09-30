@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://k8hudgdscriptx" path="res://ui/hud.gd" id="1_hud"]
 [ext_resource type="Script" uid="uid://c3attackslot1" path="res://ui/attack_slot.gd" id="2_slot"]
 [ext_resource type="Script" uid="uid://b6healthbargd" path="res://ui/health_bar.gd" id="3_bar"]
+[ext_resource type="Script" uid="uid://f2armorbarhud" path="res://ui/armor_bar.gd" id="4_armor"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -35,12 +36,40 @@ text = "100 / 100 | 100%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="WaveLabel" type="Label" parent="."]
+[node name="ArmorBar" type="Control" parent="."]
 unique_name_in_owner = true
 offset_left = 24.0
 offset_top = 54.0
-offset_right = 420.0
+offset_right = 244.0
 offset_bottom = 86.0
+mouse_filter = 2
+script = ExtResource("4_armor")
+
+[node name="ArmorLabel" type="Label" parent="ArmorBar"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 0.0
+offset_right = -6.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
+text = "0 / 50"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WaveLabel" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 24.0
+offset_top = 92.0
+offset_right = 420.0
+offset_bottom = 124.0
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4

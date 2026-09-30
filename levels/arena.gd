@@ -42,11 +42,16 @@ func _ready() -> void:
 		return
 	health.health_changed.connect(_hud.set_health)
 	health.died.connect(_on_player_died)
+	if _player.armor == null:
+		push_error("Arena player is missing ArmorComponent.")
+		return
+	_player.armor.armor_changed.connect(_hud.set_armor)
 	_player.attack_landed.connect(_on_swing_landed)
 	_player.simple_attack_started.connect(_hud.start_simple_clock)
 	_player.simple_attack_ended.connect(_hud.end_simple_clock)
 	_player.heavy_attack_started.connect(_hud.start_heavy_clock)
 	_hud.set_health(health.current_health, health.max_health)
+	_hud.set_armor(_player.armor.current_armor, _player.armor.max_armor)
 	_spawn_wave()
 	_seconds_until_wave = _next_interval()
 

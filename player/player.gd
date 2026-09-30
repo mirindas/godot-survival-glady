@@ -35,6 +35,7 @@ const SIMPLE_AIM_RADIUS_DEGREES := 45.0
 @export_range(0.0, 5.0, 0.05, "suffix:s") var heavy_cooldown: float = 1.5
 
 @onready var health: HealthComponent = %HealthComponent as HealthComponent
+@onready var armor: ArmorComponent = %ArmorComponent as ArmorComponent
 @onready var _simple_hitbox: Hitbox = %SimpleHitbox as Hitbox
 @onready var _heavy_hitbox: Hitbox = %HeavyHitbox as Hitbox
 @onready var _hurtbox: Hurtbox = $Hurtbox as Hurtbox

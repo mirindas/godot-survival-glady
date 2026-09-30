@@ -24,6 +24,8 @@ const ATTACK_COLOR := Color("ffd29a")
 @export_group("Drop")
 @export var health_drop_scene: PackedScene
 @export_range(0.0, 1.0, 0.05) var drop_chance: float = 0.4
+@export var armor_drop_scene: PackedScene
+@export_range(0.0, 1.0, 0.05) var armor_drop_chance: float = 0.4
 
 @onready var _health: HealthComponent = %HealthComponent as HealthComponent
 @onready var _hitbox: Hitbox = %Hitbox as Hitbox
@@ -130,18 +132,19 @@ func _on_died() -> void:
 	_state = State.DEAD
 	_hitbox.cancel()
 	set_physics_process(false)
-	_drop_health()
+	_drop(health_drop_scene, drop_chance, Vector2.ZERO)
+	_drop(armor_drop_scene, armor_drop_chance, Vector2(28, 0))
 	queue_free()
 
 
-func _drop_health() -> void:
-	if health_drop_scene == null or randf() > drop_chance:
+func _drop(scene: PackedScene, chance: float, offset: Vector2) -> void:
+	if scene == null or randf() > chance:
 		return
-	var drop := health_drop_scene.instantiate() as Node2D
+	var drop := scene.instantiate() as Node2D
 	var actors := get_parent()
 	if drop == null or actors == null:
 		return
-	drop.position = position
+	drop.position = position + offset
 	actors.add_child.call_deferred(drop)
 
 

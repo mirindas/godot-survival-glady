@@ -7,6 +7,7 @@ signal hit_landed
 signal finished
 
 @export_range(1, 500) var damage: int = 25
+@export_range(0, 50) var armor_reduction: int = 0
 @export_group("Damage number")
 @export var damage_color: Color = Color("ffe14a")
 @export_range(8, 72, 1) var damage_font_size: int = 28
@@ -148,12 +149,14 @@ func _try_hit(area: Area2D) -> void:
 	if hurtbox == null or _already_hit.has(hurtbox):
 		return
 	_already_hit.append(hurtbox)
-	if hurtbox.receive_hit(damage, _attacker_position()):
-		_spawn_damage_number(hurtbox)
-		hit_landed.emit()
+	var applied := hurtbox.receive_hit(damage, _attacker_position(), armor_reduction)
+	if applied <= 0:
+		return
+	_spawn_damage_number(hurtbox, applied)
+	hit_landed.emit()
 
 
-func _spawn_damage_number(hurtbox: Hurtbox) -> void:
+func _spawn_damage_number(hurtbox: Hurtbox, amount: int) -> void:
 	var body := hurtbox.get_parent() as Node2D
 	var host: Node = body.get_parent() if body != null else null
 	if host == null:
@@ -164,7 +167,7 @@ func _spawn_damage_number(hurtbox: Hurtbox) -> void:
 	var number := DamageNumber.new()
 	var spread := Units.measure(&"damage_number_spread")
 	var lift := Units.measure(&"damage_number_lift")
-	number.setup(damage, damage_color, damage_font_size, origin + Vector2(randf_range(-spread, spread), -lift))
+	number.setup(amount, damage_color, damage_font_size, origin + Vector2(randf_range(-spread, spread), -lift))
 	host.add_child.call_deferred(number)
 
 

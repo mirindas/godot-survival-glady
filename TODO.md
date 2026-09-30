@@ -72,7 +72,11 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Pickups**
   State: completed
-  `res://pickups/health/health_pickup.tscn` restores 30 health through `HealthComponent.heal` when the player overlaps it. A grunt has a 40% chance to leave one behind on death. No inventory.
+  `res://pickups/health/health_pickup.tscn` restores 30 health through `HealthComponent.heal` when the player overlaps it. A grunt has a 40% chance to leave one behind on death. No inventory. Armor drops the same way: a blue shield restores 15 armor, also at 40%.
+
+- [X] **Armor**
+  State: completed
+  Player armor starts at 0 and caps at 50. A hit is reduced with `raw * 100 / (100 + armor)`, so each point adds 1% effective health and 50 armor blocks about a third of the hit. A grunt hit also strips 5 armor before that reduction. The HUD shows a blue bar under health. The floating number is the damage after armor.
 
 - [X] **Player defeat and restart**
   State: completed
