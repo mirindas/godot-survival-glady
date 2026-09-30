@@ -1,0 +1,43 @@
+class_name DamageNumber
+extends Node2D
+## World-space damage text. Lives in the room, not on the body that was hit,
+## so a killing blow does not delete the number.
+
+const LIFE_SECONDS := 0.7
+const RISE_SPEED := 52.0
+
+var _amount := 0
+var _color := Color.WHITE
+var _font_size := 28
+var _spawn_at := Vector2.ZERO
+var _age := 0.0
+
+
+func setup(amount: int, color: Color, font_size: int, world_position: Vector2) -> void:
+	_amount = amount
+	_color = color
+	_font_size = font_size
+	_spawn_at = world_position
+	z_index = 20
+
+
+func _ready() -> void:
+	global_position = _spawn_at
+
+
+func _process(delta: float) -> void:
+	_age += delta
+	position.y -= RISE_SPEED * delta
+	modulate.a = clampf(1.0 - _age / LIFE_SECONDS, 0.0, 1.0)
+	queue_redraw()
+	if _age >= LIFE_SECONDS:
+		queue_free()
+
+
+func _draw() -> void:
+	var font := ThemeDB.fallback_font
+	var text := str(_amount)
+	var text_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size)
+	var origin := Vector2(-text_size.x * 0.5, 0.0)
+	draw_string(font, origin + Vector2(1, 1), text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, Color(0, 0, 0, 0.9))
+	draw_string(font, origin, text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, _color)

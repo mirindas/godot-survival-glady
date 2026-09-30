@@ -51,6 +51,8 @@ monitoring = false
 monitorable = false
 script = ExtResource("4_hitbox")
 damage = 12
+damage_color = Color(0.89, 0.22, 0.2, 1)
+damage_font_size = 20
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 shape = SubResource("RectangleShape2D_hit")

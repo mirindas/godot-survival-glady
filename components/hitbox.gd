@@ -7,6 +7,9 @@ signal hit_landed
 signal finished
 
 @export_range(1, 500) var damage: int = 25
+@export_group("Damage number")
+@export var damage_color: Color = Color("ffe14a")
+@export_range(8, 72, 1) var damage_font_size: int = 28
 
 var _already_hit: Array[Hurtbox] = []
 var _playing := false
@@ -100,7 +103,21 @@ func _try_hit(area: Area2D) -> void:
 		return
 	_already_hit.append(hurtbox)
 	if hurtbox.receive_hit(damage, _attacker_position()):
+		_spawn_damage_number(hurtbox)
 		hit_landed.emit()
+
+
+func _spawn_damage_number(hurtbox: Hurtbox) -> void:
+	var body := hurtbox.get_parent() as Node2D
+	var host: Node = body.get_parent() if body != null else null
+	if host == null:
+		host = get_tree().current_scene
+	if host == null:
+		return
+	var origin := body.global_position if body != null else hurtbox.global_position
+	var number := DamageNumber.new()
+	number.setup(damage, damage_color, damage_font_size, origin + Vector2(randf_range(-8.0, 8.0), -50.0))
+	host.add_child.call_deferred(number)
 
 
 func _attacker_position() -> Vector2:

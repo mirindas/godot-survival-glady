@@ -58,6 +58,10 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
   State: completed
   Three swings. Pressing attack during a swing continues the chain. The chain returns to idle after the third swing, or sooner if attack was not pressed again. A hit cancels it.
 
+- [X] **Floating combat text**
+  State: completed
+  A landed swing spawns `DamageNumber` above the body that was hit. Player hits are yellow at font size 28. Enemy hits on the player are red at font size 20. Both sizes are exports on that swing's `Hitbox`.
+
 - [X] **Pickups**
   State: completed
   `res://pickups/health/health_pickup.tscn` restores 30 health through `HealthComponent.heal` when the player overlaps it. A grunt has a 40% chance to leave one behind on death. No inventory.
