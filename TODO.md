@@ -58,6 +58,10 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
   State: completed
   Three swings. Pressing attack during a swing continues the chain. The chain returns to idle after the third swing, or sooner if attack was not pressed again. A hit cancels it.
 
+- [X] **Size units**
+  State: completed
+  `res://components/units.gd` maps gameplay distances and speeds. 1 unit is the player body width, 36 px. `MEASURES` holds the unit values. `measure()` turns a name into pixels. Collision shapes in the editor stay in pixels; the swing rectangle is applied from `swing_width` and `swing_height` when the hitbox is ready.
+
 - [X] **Floating combat text**
   State: completed
   A landed swing spawns `DamageNumber` above the body that was hit. Player hits are yellow at font size 28. Enemy hits on the player are red at font size 20. Both sizes are exports on that swing's `Hitbox`.

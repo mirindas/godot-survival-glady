@@ -3,7 +3,7 @@ extends Node
 ## Short push shared by any body that owns its own velocity.
 ## The body asks for the velocity each physics frame; this node does not move it.
 
-@export_range(0.0, 2000.0, 10.0, "suffix:px/s") var speed: float = 340.0
+@export_range(0.0, 30.0, 0.05, "suffix:widths/s") var speed: float = Units.PLAYER_KNOCKBACK_SPEED
 @export_range(0.0, 1.0, 0.01, "suffix:s") var duration: float = 0.12
 
 var _time_left := 0.0
@@ -28,4 +28,4 @@ func consume(delta: float) -> Vector2:
 	if _time_left <= 0.0:
 		return Vector2.ZERO
 	_time_left = maxf(_time_left - delta, 0.0)
-	return _direction * speed
+	return _direction * Units.px(speed)

@@ -59,4 +59,4 @@ shape = SubResource("RectangleShape2D_hit")
 
 [node name="Knockback" type="Node" parent="."]
 script = ExtResource("5_knock")
-speed = 280.0
+	speed = 7.777778

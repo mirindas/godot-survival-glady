@@ -4,7 +4,7 @@ extends Node2D
 ## so a killing blow does not delete the number.
 
 const LIFE_SECONDS := 0.7
-const RISE_SPEED := 52.0
+const RISE_SPEED_ID: StringName = &"damage_number_rise_speed"
 
 var _amount := 0
 var _color := Color.WHITE
@@ -27,7 +27,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_age += delta
-	position.y -= RISE_SPEED * delta
+	position.y -= Units.measure(RISE_SPEED_ID) * delta
 	modulate.a = clampf(1.0 - _age / LIFE_SECONDS, 0.0, 1.0)
 	queue_redraw()
 	if _age >= LIFE_SECONDS:

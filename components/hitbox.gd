@@ -25,6 +25,17 @@ func _ready() -> void:
 	monitorable = false
 	set_physics_process(false)
 	area_entered.connect(_on_area_entered)
+	_apply_swing_size()
+
+
+func _apply_swing_size() -> void:
+	var collision := get_node_or_null(^"CollisionShape2D") as CollisionShape2D
+	if collision == null:
+		return
+	var rect := collision.shape as RectangleShape2D
+	if rect == null:
+		return
+	rect.size = Vector2(Units.measure(&"swing_width"), Units.measure(&"swing_height"))
 
 
 ## Opens this hitbox during [active_start, active_end) of a swing that lasts duration.
@@ -116,7 +127,9 @@ func _spawn_damage_number(hurtbox: Hurtbox) -> void:
 		return
 	var origin := body.global_position if body != null else hurtbox.global_position
 	var number := DamageNumber.new()
-	number.setup(damage, damage_color, damage_font_size, origin + Vector2(randf_range(-8.0, 8.0), -50.0))
+	var spread := Units.measure(&"damage_number_spread")
+	var lift := Units.measure(&"damage_number_lift")
+	number.setup(damage, damage_color, damage_font_size, origin + Vector2(randf_range(-spread, spread), -lift))
 	host.add_child.call_deferred(number)
 
 

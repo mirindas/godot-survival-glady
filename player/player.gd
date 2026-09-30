@@ -7,14 +7,12 @@ signal attack_landed
 
 enum State { IDLE, MOVE, ATTACK, DEAD }
 
-const HITBOX_DISTANCE := 46.0
 const BODY_COLOR := Color("4c7dff")
 const ATTACK_COLOR := Color("9eb6ff")
 const SHAKE_TIME := 0.12
-const SHAKE_AMOUNT := 5.0
 
 @export_group("Movement")
-@export_range(50.0, 800.0, 10.0, "suffix:px/s") var move_speed: float = 260.0
+@export_range(1.0, 20.0, 0.05, "suffix:widths/s") var move_speed: float = Units.PLAYER_MOVE_SPEED
 
 @export_group("Attack")
 @export var attack_durations: Array[float] = [0.32, 0.26, 0.4]
@@ -63,10 +61,8 @@ func _process(delta: float) -> void:
 		_camera.offset = Vector2.ZERO
 		set_process(false)
 		return
-	_camera.offset = Vector2(
-		randf_range(-SHAKE_AMOUNT, SHAKE_AMOUNT),
-		randf_range(-SHAKE_AMOUNT, SHAKE_AMOUNT)
-	)
+	var shake := Units.measure(&"shake_amount")
+	_camera.offset = Vector2(randf_range(-shake, shake), randf_range(-shake, shake))
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -96,7 +92,7 @@ func _update_locomotion(delta: float) -> void:
 		_change_state(State.MOVE)
 	else:
 		_change_state(State.IDLE)
-	_move(delta, direction * move_speed)
+	_move(delta, direction * Units.px(move_speed))
 	if _attack_requested:
 		_attack_requested = false
 		_combo_step = 0
@@ -156,7 +152,7 @@ func _set_facing(direction: Vector2) -> void:
 
 
 func _apply_facing() -> void:
-	_hitbox.position = _facing * HITBOX_DISTANCE
+	_hitbox.position = _facing * Units.measure(&"swing_reach")
 	_hitbox.rotation = _facing.angle()
 	queue_redraw()
 

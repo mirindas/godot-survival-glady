@@ -7,14 +7,13 @@ signal attack_landed
 
 enum State { CHASE, ATTACK, RECOVER, DEAD }
 
-const HITBOX_DISTANCE := 46.0
 const BODY_COLOR := Color("d9782d")
 const ATTACK_COLOR := Color("ffd29a")
 
 @export_group("Movement")
-@export_range(40.0, 400.0, 10.0, "suffix:px/s") var move_speed: float = 120.0
-@export_range(20.0, 200.0, 1.0, "suffix:px") var attack_range: float = 74.0
-@export_range(0.0, 300.0, 10.0, "suffix:px/s") var lunge_speed: float = 90.0
+@export_range(1.0, 12.0, 0.05, "suffix:widths/s") var move_speed: float = Units.GRUNT_MOVE_SPEED
+@export_range(0.5, 6.0, 0.05, "suffix:widths") var attack_range: float = Units.GRUNT_ATTACK_RANGE
+@export_range(0.0, 8.0, 0.05, "suffix:widths/s") var lunge_speed: float = Units.GRUNT_LUNGE_SPEED
 
 @export_group("Attack")
 @export_range(0.05, 1.5, 0.01, "suffix:s") var attack_duration: float = 0.46
@@ -59,7 +58,7 @@ func _physics_process(delta: float) -> void:
 		State.CHASE:
 			_chase(delta)
 		State.ATTACK:
-			_move(delta, _facing * lunge_speed)
+			_move(delta, _facing * Units.px(lunge_speed))
 		State.RECOVER:
 			_recover(delta)
 		State.DEAD:
@@ -72,10 +71,10 @@ func _chase(delta: float) -> void:
 		return
 	var to_target := _target.global_position - global_position
 	_set_facing(to_target)
-	if to_target.length() <= attack_range:
+	if to_target.length() <= Units.px(attack_range):
 		_start_attack()
 		return
-	_move(delta, to_target.normalized() * move_speed)
+	_move(delta, to_target.normalized() * Units.px(move_speed))
 
 
 func _start_attack() -> void:
@@ -169,7 +168,7 @@ func _set_facing(direction: Vector2) -> void:
 
 
 func _apply_facing() -> void:
-	_hitbox.position = _facing * HITBOX_DISTANCE
+	_hitbox.position = _facing * Units.measure(&"swing_reach")
 	_hitbox.rotation = _facing.angle()
 	queue_redraw()
 
