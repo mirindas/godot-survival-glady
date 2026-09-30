@@ -40,7 +40,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Arena and HUD**
   State: completed
-  `res://levels/arena.tscn` builds the room, instances the player, and connects player health to `res://ui/hud.tscn`. The HUD does not search the tree for the player. Waves replaced the placed dummy.
+  `res://levels/arena.tscn` builds the room, instances the player, and connects player health to `res://ui/hud.tscn`. The HUD does not search the tree for the player. Waves replaced the placed dummy. Bottom-left squares show the simple and heavy swings. Each sword is drawn in code. A clockwise fade restores the square from 50% opacity over the swing, or over the heavy cooldown. Health is a silver-bordered bar: green until it drops below 30%, orange below that, red below 10%. The label reads current / maximum | percent.
 
 - [X] **Enemy that fights back**
   State: completed
@@ -76,7 +76,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Player defeat and restart**
   State: completed
-  When the player reaches 0 health, `res://levels/arena.gd` shows "Defeated" on the HUD and reloads the arena when `attack` is pressed. Nothing is kept across the reload, so no autoload is involved.
+  When the player reaches 0 health, the HUD shows a large red "DEFEATED" in the center and reloads the arena when `attack` is pressed. Nothing is kept across the reload, so no autoload is involved.
 
 - [X] **Headless smoke run**
   State: completed

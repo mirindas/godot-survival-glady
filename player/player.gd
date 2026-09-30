@@ -8,6 +8,9 @@ extends CharacterBody2D
 ## Health and hit detection live on child nodes.
 
 signal attack_landed
+signal simple_attack_started(duration: float)
+signal simple_attack_ended
+signal heavy_attack_started(duration: float)
 
 enum State { IDLE, MOVE, SIMPLE_ATTACK, HEAVY_ATTACK, DEAD }
 
@@ -154,7 +157,9 @@ func _start_simple() -> void:
 	_heavy_hitbox.cancel()
 	_change_state(State.SIMPLE_ATTACK)
 	var step := mini(_combo_step, simple_durations.size() - 1)
-	_simple_hitbox.play(simple_durations[step], simple_active_starts[step], simple_active_ends[step])
+	var duration := simple_durations[step]
+	_simple_hitbox.play(duration, simple_active_starts[step], simple_active_ends[step])
+	simple_attack_started.emit(duration)
 	queue_redraw()
 
 
@@ -165,6 +170,7 @@ func _start_heavy() -> void:
 	_heavy_cooldown = heavy_cooldown
 	_change_state(State.HEAVY_ATTACK)
 	_heavy_hitbox.play(heavy_duration, heavy_active_start, heavy_active_end)
+	heavy_attack_started.emit(heavy_cooldown)
 	queue_redraw()
 
 
@@ -179,6 +185,7 @@ func _on_swing_finished() -> void:
 		_combo_queued = false
 		_combo_step = 0
 		_change_state(State.IDLE)
+		simple_attack_ended.emit()
 	elif _state == State.HEAVY_ATTACK:
 		_change_state(State.IDLE)
 
@@ -191,10 +198,13 @@ func _on_hit_received(from_position: Vector2) -> void:
 	if _state == State.DEAD:
 		return
 	_knockback.apply(from_position, global_position, -_facing)
+	var ended_simple := _state == State.SIMPLE_ATTACK
 	if _state != State.SIMPLE_ATTACK and _state != State.HEAVY_ATTACK:
 		return
 	_cancel_attacks()
 	_change_state(State.IDLE)
+	if ended_simple:
+		simple_attack_ended.emit()
 
 
 func _cancel_attacks() -> void:
@@ -245,8 +255,11 @@ func _change_state(next: State) -> void:
 
 
 func _on_died() -> void:
+	var ended_simple := _state == State.SIMPLE_ATTACK
 	_cancel_attacks()
 	_change_state(State.DEAD)
+	if ended_simple:
+		simple_attack_ended.emit()
 	set_physics_process(false)
 	set_process(false)
 	velocity = Vector2.ZERO
