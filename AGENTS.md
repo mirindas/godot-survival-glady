@@ -48,14 +48,14 @@ Call down, signal up. The arena wires the player's `health_changed` and `died` t
 
 | Concern | Owner |
 |---|---|
-| Movement and the swing | `res://player/player.gd` |
+| Movement and both swings | `res://player/player.gd` |
 | Hit points | `HealthComponent` on that actor |
 | Active frames of a swing | `Hitbox` |
 | Receiving a hit | `Hurtbox` |
 | Who is in the room | `res://levels/arena.gd` |
 | Health text | `res://ui/hud.gd` |
 
-Physics layers stay: `world`, `player`, `enemy`, `player_hit`, `enemy_hurt`, `player_hurt`. Gameplay input uses the InputMap actions `move_left`, `move_right`, `move_up`, `move_down`, and `attack`.
+Physics layers stay: `world`, `player`, `enemy`, `player_hit`, `enemy_hurt`, `player_hurt`. Gameplay input uses the InputMap actions `move_left`, `move_right`, `move_up`, `move_down`, `attack` (simple swing), and `heavy_attack`.
 
 No autoload, manager, generic state-machine framework, pixel-snap import setup, or object pool unless `TODO.md` moves that item out of Denied and the user asks for it. A global is justified only when the data must outlive the current scene.
 

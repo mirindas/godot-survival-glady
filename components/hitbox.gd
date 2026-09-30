@@ -18,6 +18,7 @@ var _duration := 0.0
 var _active_start := 0.0
 var _active_end := 0.0
 var _window_open := false
+var _arc := PackedVector2Array()
 
 
 func _ready() -> void:
@@ -29,13 +30,47 @@ func _ready() -> void:
 
 
 func _apply_swing_size() -> void:
+	if get_node_or_null(^"CollisionShape2D") == null:
+		return
+	apply_rectangle(Units.measure(&"swing_width"), Units.measure(&"swing_height"))
+
+
+## Sets the rectangle collision size in pixels.
+func apply_rectangle(width: float, height: float) -> void:
 	var collision := get_node_or_null(^"CollisionShape2D") as CollisionShape2D
 	if collision == null:
+		push_error("Hitbox '%s' is missing CollisionShape2D." % name)
 		return
 	var rect := collision.shape as RectangleShape2D
 	if rect == null:
+		push_error("Hitbox '%s' collision is not a rectangle." % name)
 		return
-	rect.size = Vector2(Units.measure(&"swing_width"), Units.measure(&"swing_height"))
+	rect.size = Vector2(width, height)
+
+
+## Builds a wedge along local +X. degrees is the full angle.
+## The owner rotates this hitbox so the wedge points at the target.
+func setup_arc(radius: float, degrees: float) -> void:
+	assert(radius > 0.0)
+	assert(degrees > 0.0 and degrees < 360.0)
+	_arc = _arc_points(radius, degrees)
+	var polygon := get_node_or_null(^"Arc") as CollisionPolygon2D
+	if polygon == null:
+		polygon = CollisionPolygon2D.new()
+		polygon.name = "Arc"
+		add_child(polygon)
+	polygon.polygon = _arc
+
+
+func _arc_points(radius: float, degrees: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	points.append(Vector2.ZERO)
+	var half := deg_to_rad(degrees) * 0.5
+	var steps := 6
+	for i in steps + 1:
+		var angle := lerpf(-half, half, float(i) / float(steps))
+		points.append(Vector2.from_angle(angle) * radius)
+	return points
 
 
 ## Opens this hitbox during [active_start, active_end) of a swing that lasts duration.
@@ -142,6 +177,9 @@ func _attacker_position() -> Vector2:
 
 func _draw() -> void:
 	if not monitoring:
+		return
+	if _arc.size() >= 3:
+		draw_colored_polygon(_arc, Color(1, 1, 1, 0.35))
 		return
 	var collision := get_node_or_null(^"CollisionShape2D") as CollisionShape2D
 	if collision == null:

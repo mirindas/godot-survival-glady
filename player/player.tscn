@@ -12,8 +12,8 @@ size = Vector2(36, 48)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
 size = Vector2(36, 48)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
-size = Vector2(40, 28)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_heavy"]
+size = Vector2(72, 36)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
@@ -39,9 +39,8 @@ health = NodePath("../HealthComponent")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("RectangleShape2D_hurt")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="SimpleHitbox" type="Area2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(46, 0)
 collision_layer = 8
 collision_mask = 16
 monitoring = false
@@ -50,8 +49,20 @@ script = ExtResource("4_hitbox")
 damage_color = Color(1, 0.882, 0.29, 1)
 damage_font_size = 28
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-shape = SubResource("RectangleShape2D_hit")
+[node name="HeavyHitbox" type="Area2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(90, 0)
+collision_layer = 8
+collision_mask = 16
+monitoring = false
+monitorable = false
+script = ExtResource("4_hitbox")
+damage = 45
+damage_color = Color(1, 0.62, 0.22, 1)
+damage_font_size = 36
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HeavyHitbox"]
+shape = SubResource("RectangleShape2D_heavy")
 
 [node name="Knockback" type="Node" parent="."]
 script = ExtResource("5_knock")

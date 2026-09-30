@@ -20,7 +20,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Input actions**
   State: completed
-  `move_left`, `move_right`, `move_up`, `move_down`, and `attack` cover keyboard, mouse, and a basic gamepad. Gameplay reads actions, not raw key codes.
+  `move_left`, `move_right`, `move_up`, `move_down`, `attack`, and `heavy_attack` cover keyboard, mouse, and a basic gamepad. `attack` is the simple swing. Gameplay reads actions, not raw key codes.
 
 - [X] **Physics layers**
   State: completed
@@ -32,7 +32,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Player movement and swing**
   State: completed
-  `res://player/player.gd` uses floating `CharacterBody2D` motion and the states idle, move, attack, and dead. The camera sits on the player, zoomed in and limited to the room.
+  `res://player/player.gd` uses floating `CharacterBody2D` motion and the states idle, move, simple attack, heavy attack, and dead. The camera sits on the player, zoomed in and limited to the room. Simple attack keeps movement. Heavy attack stops it until the swing ends.
 
 - [X] **Training dummy**
   State: completed
@@ -56,7 +56,11 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Attack chain**
   State: completed
-  Three swings. Pressing attack during a swing continues the chain. The chain returns to idle after the third swing, or sooner if attack was not pressed again. A hit cancels it.
+  The simple attack is three swings in a wedge 45° to either side of the cursor. Movement stays on during the chain. Pressing attack during a swing continues it. The chain returns to idle after the third swing, or sooner if attack was not pressed again. A hit cancels it.
+
+- [X] **Heavy attack**
+  State: completed
+  Right click, K, gamepad Y, or the left trigger. One frontal swing, 45 damage, far edge at 126 px. The player is stopped until it finishes. It does not continue the simple chain.
 
 - [X] **Size units**
   State: completed

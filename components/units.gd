@@ -14,6 +14,10 @@ const GRUNT_ATTACK_RANGE := 74.0 / PLAYER_WIDTH # 74 px
 const SWING_REACH := 46.0 / PLAYER_WIDTH # 46 px in front of the body
 const SWING_WIDTH := 40.0 / PLAYER_WIDTH # hitbox width, 40 px
 const SWING_HEIGHT := 28.0 / PLAYER_WIDTH # hitbox height, 28 px
+const SIMPLE_ARC_RADIUS := 72.0 / PLAYER_WIDTH # 72 px, simple wedge from the body
+const HEAVY_SWING_REACH := 90.0 / PLAYER_WIDTH # 90 px to the heavy hitbox center
+const HEAVY_SWING_WIDTH := 72.0 / PLAYER_WIDTH # 72 px, far edge at 126 px
+const HEAVY_SWING_HEIGHT := 36.0 / PLAYER_WIDTH # 36 px
 const PLAYER_KNOCKBACK_SPEED := 340.0 / PLAYER_WIDTH # 340 px/s
 const GRUNT_KNOCKBACK_SPEED := 280.0 / PLAYER_WIDTH # 280 px/s
 const DAMAGE_NUMBER_LIFT := 50.0 / PLAYER_WIDTH # 50 px above the body
@@ -29,6 +33,10 @@ const MEASURES: Dictionary[StringName, float] = {
 	&"swing_reach": SWING_REACH,
 	&"swing_width": SWING_WIDTH,
 	&"swing_height": SWING_HEIGHT,
+	&"simple_arc_radius": SIMPLE_ARC_RADIUS,
+	&"heavy_swing_reach": HEAVY_SWING_REACH,
+	&"heavy_swing_width": HEAVY_SWING_WIDTH,
+	&"heavy_swing_height": HEAVY_SWING_HEIGHT,
 	&"player_knockback_speed": PLAYER_KNOCKBACK_SPEED,
 	&"grunt_knockback_speed": GRUNT_KNOCKBACK_SPEED,
 	&"damage_number_lift": DAMAGE_NUMBER_LIFT,
