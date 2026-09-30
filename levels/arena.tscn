@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://j7arenatscnscn"]
+
+[ext_resource type="Script" uid="uid://i6arenagdscript" path="res://levels/arena.gd" id="1_arena"]
+[ext_resource type="PackedScene" uid="uid://f3playertscene" path="res://player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://h5dummytscnscn" path="res://enemies/dummy/dummy.tscn" id="3_dummy"]
+[ext_resource type="PackedScene" uid="uid://m9hudtscnscene" path="res://ui/hud.tscn" id="4_hud"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal"]
+size = Vector2(2200, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vertical"]
+size = Vector2(64, 1600)
+
+[node name="Arena" type="Node2D"]
+script = ExtResource("1_arena")
+
+[node name="Ground" type="Polygon2D" parent="."]
+color = Color(0.18, 0.15, 0.14, 1)
+polygon = PackedVector2Array(0, 0, 2200, 0, 2200, 1600, 0, 1600)
+
+[node name="Floor" type="Polygon2D" parent="."]
+color = Color(0.29, 0.34, 0.26, 1)
+polygon = PackedVector2Array(64, 64, 2136, 64, 2136, 1536, 64, 1536)
+
+[node name="Walls" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="North" type="CollisionShape2D" parent="Walls"]
+position = Vector2(1100, 32)
+shape = SubResource("RectangleShape2D_horizontal")
+
+[node name="South" type="CollisionShape2D" parent="Walls"]
+position = Vector2(1100, 1568)
+shape = SubResource("RectangleShape2D_horizontal")
+
+[node name="West" type="CollisionShape2D" parent="Walls"]
+position = Vector2(32, 800)
+shape = SubResource("RectangleShape2D_vertical")
+
+[node name="East" type="CollisionShape2D" parent="Walls"]
+position = Vector2(2168, 800)
+shape = SubResource("RectangleShape2D_vertical")
+
+[node name="Actors" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Player" parent="Actors" instance=ExtResource("2_player")]
+unique_name_in_owner = true
+position = Vector2(780, 800)
+
+[node name="Dummy" parent="Actors" instance=ExtResource("3_dummy")]
+position = Vector2(1080, 800)
+
+[node name="Hud" parent="." instance=ExtResource("4_hud")]
+unique_name_in_owner = true
