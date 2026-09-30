@@ -4,33 +4,9 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 ## Pending
 
-- [ ] **Enemy that fights back**
-  State: pending
-  A moving enemy that chases the player and swings on its own hitbox. The player hurtbox on `res://player/player.tscn` is already on layer `player_hurt` and is wired to `HealthComponent`, so a landed hit can reduce the HUD.
-
-- [ ] **Player defeat and restart**
-  State: pending
-  When the player reaches 0 health, `res://levels/arena.gd` already tells the HUD to show "Defeated" and the body stops. Add a way to restart the arena from that state.
-
-- [ ] **Hit feel**
-  State: pending
-  Knockback, a short hit pause, and a small camera shake when a swing connects. The dummy only flashes red today (`res://enemies/dummy/dummy.gd`).
-
 - [ ] **Replace placeholder drawings**
   State: pending
   Swap the `_draw()` rectangles on the player and dummy for sprites and an attack animation. Keep the collision shapes in `BodyShape`, `Hitbox`, and `Hurtbox` as the gameplay size.
-
-- [ ] **Survival loop**
-  State: pending
-  Spawn waves of enemies in the arena, raise the pressure over time, and end the run when the player dies. The arena in `res://levels/arena.tscn` is the owner of who is in the fight.
-
-- [ ] **Attack chain**
-  State: pending
-  A short combo that continues if attack is pressed again during the swing. `Player` currently stores one buffered attack and returns to idle when `attack_duration` ends.
-
-- [ ] **Pickups**
-  State: pending
-  Drops that restore health, collected by an `Area2D` and applied through `HealthComponent`. No inventory yet.
 
 - [ ] **Sound**
   State: pending
@@ -64,7 +40,31 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Arena and HUD**
   State: completed
-  `res://levels/arena.tscn` builds the room, instances the player and dummy, and connects player health to `res://ui/hud.tscn`. The HUD does not search the tree for the player.
+  `res://levels/arena.tscn` builds the room, instances the player, and connects player health to `res://ui/hud.tscn`. The HUD does not search the tree for the player. Waves replaced the placed dummy.
+
+- [X] **Enemy that fights back**
+  State: completed
+  `res://enemies/grunt/grunt.tscn` chases the player it is given and swings on its own hitbox (mask `player_hurt`, 12 damage). The arena calls `setup(player)`. It does not search the tree. 70 health. A landed hit reduces the HUD.
+
+- [X] **Hit feel**
+  State: completed
+  `Knockback` shoves the body that was hit. The arena briefly slows `Engine.time_scale` and asks the player to shake its camera whenever a swing connects. Getting hit cancels the current swing. `Hitbox.play()` owns the active-frame timing so the player and the grunt share it.
+
+- [X] **Survival loop**
+  State: completed
+  `res://levels/arena.gd` spawns grunts in waves, shortens the gap between waves, and stops at 8 alive. The run ends through the existing defeat and restart. The dummy scene remains, but the arena no longer places one in the room.
+
+- [X] **Attack chain**
+  State: completed
+  Three swings. Pressing attack during a swing continues the chain. The chain returns to idle after the third swing, or sooner if attack was not pressed again. A hit cancels it.
+
+- [X] **Pickups**
+  State: completed
+  `res://pickups/health/health_pickup.tscn` restores 30 health through `HealthComponent.heal` when the player overlaps it. A grunt has a 40% chance to leave one behind on death. No inventory.
+
+- [X] **Player defeat and restart**
+  State: completed
+  When the player reaches 0 health, `res://levels/arena.gd` shows "Defeated" on the HUD and reloads the arena when `attack` is pressed. Nothing is kept across the reload, so no autoload is involved.
 
 - [X] **Headless smoke run**
   State: completed

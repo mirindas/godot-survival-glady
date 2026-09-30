@@ -1,5 +1,5 @@
 extends StaticBody2D
-## Standing target. Proves the swing connects. Replace with a real enemy later.
+## Standing target. Proves the swing connects. The arena fight spawns grunts instead.
 
 @onready var _health: HealthComponent = %HealthComponent as HealthComponent
 @onready var _body_shape: CollisionShape2D = $BodyShape

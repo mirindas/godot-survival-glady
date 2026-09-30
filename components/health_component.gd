@@ -26,3 +26,10 @@ func take_damage(amount: int) -> void:
 	health_changed.emit(_current, max_health)
 	if _current == 0:
 		died.emit()
+
+
+func heal(amount: int) -> void:
+	if amount <= 0 or _current <= 0 or _current >= max_health:
+		return
+	_current = mini(_current + amount, max_health)
+	health_changed.emit(_current, max_health)

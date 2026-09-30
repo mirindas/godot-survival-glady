@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://i6arenagdscript" path="res://levels/arena.gd" id="1_arena"]
 [ext_resource type="PackedScene" uid="uid://f3playertscene" path="res://player/player.tscn" id="2_player"]
-[ext_resource type="PackedScene" uid="uid://h5dummytscnscn" path="res://enemies/dummy/dummy.tscn" id="3_dummy"]
+[ext_resource type="PackedScene" uid="uid://c2grunttscene" path="res://enemies/grunt/grunt.tscn" id="3_grunt"]
 [ext_resource type="PackedScene" uid="uid://m9hudtscnscene" path="res://ui/hud.tscn" id="4_hud"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal"]
@@ -13,6 +13,7 @@ size = Vector2(64, 1600)
 
 [node name="Arena" type="Node2D"]
 script = ExtResource("1_arena")
+grunt_scene = ExtResource("3_grunt")
 
 [node name="Ground" type="Polygon2D" parent="."]
 color = Color(0.18, 0.15, 0.14, 1)
@@ -43,14 +44,12 @@ position = Vector2(2168, 800)
 shape = SubResource("RectangleShape2D_vertical")
 
 [node name="Actors" type="Node2D" parent="."]
+unique_name_in_owner = true
 y_sort_enabled = true
 
 [node name="Player" parent="Actors" instance=ExtResource("2_player")]
 unique_name_in_owner = true
 position = Vector2(780, 800)
-
-[node name="Dummy" parent="Actors" instance=ExtResource("3_dummy")]
-position = Vector2(1080, 800)
 
 [node name="Hud" parent="." instance=ExtResource("4_hud")]
 unique_name_in_owner = true
