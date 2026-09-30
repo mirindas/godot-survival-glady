@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://f3playertscene" path="res://player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://c2grunttscene" path="res://enemies/grunt/grunt.tscn" id="3_grunt"]
 [ext_resource type="PackedScene" uid="uid://m9hudtscnscene" path="res://ui/hud.tscn" id="4_hud"]
+[ext_resource type="Script" uid="uid://a8floorgriddraw" path="res://levels/floor_grid.gd" id="5_grid"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal"]
 size = Vector2(2200, 64)
@@ -22,6 +23,9 @@ polygon = PackedVector2Array(0, 0, 2200, 0, 2200, 1600, 0, 1600)
 [node name="Floor" type="Polygon2D" parent="."]
 color = Color(0.29, 0.34, 0.26, 1)
 polygon = PackedVector2Array(64, 64, 2136, 64, 2136, 1536, 64, 1536)
+
+[node name="FloorGrid" type="Node2D" parent="."]
+script = ExtResource("5_grid")
 
 [node name="Walls" type="StaticBody2D" parent="."]
 collision_layer = 1

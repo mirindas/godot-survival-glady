@@ -190,4 +190,9 @@ func _draw() -> void:
 	elif _state == State.DEAD:
 		color = Color(0.35, 0.38, 0.45)
 	draw_rect(Rect2(-size * 0.5, size), color)
-	draw_line(Vector2.ZERO, _facing * 22.0, Color.WHITE, 3.0)
+	var mark := _facing * 22.0
+	if _state == State.ATTACK:
+		mark = _facing * 56.0
+		draw_line(Vector2.ZERO, mark, Color("fff4c2"), 8.0)
+	else:
+		draw_line(Vector2.ZERO, mark, Color.WHITE, 3.0)

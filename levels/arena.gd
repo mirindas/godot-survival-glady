@@ -4,6 +4,7 @@ extends Node2D
 
 const HIT_PAUSE_SCALE := 0.08
 const HIT_PAUSE_REAL_SECONDS := 0.055
+const FIRST_GRUNT_POSITION := Vector2(1000, 800)
 const SPAWN_POINTS: Array[Vector2] = [
 	Vector2(220, 220),
 	Vector2(1980, 220),
@@ -31,7 +32,7 @@ var _spawn_cursor := 0
 
 
 func _ready() -> void:
-	set_process(false)
+	Engine.time_scale = 1.0
 	var health := _player.health
 	if health == null:
 		push_error("Arena player is missing HealthComponent.")
@@ -62,6 +63,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _hit_pause_left > 0.0:
+		var real_delta := delta / maxf(Engine.time_scale, 0.001)
+		_hit_pause_left -= real_delta
+		if _hit_pause_left <= 0.0:
+			Engine.time_scale = 1.0
+			_hit_pause_left = 0.0
 	if _defeated or _restarting:
 		return
 	_seconds_until_wave -= delta
@@ -69,16 +76,6 @@ func _physics_process(delta: float) -> void:
 		return
 	_spawn_wave()
 	_seconds_until_wave = _next_interval()
-
-
-func _process(delta: float) -> void:
-	var real_delta := delta / maxf(Engine.time_scale, 0.001)
-	_hit_pause_left -= real_delta
-	if _hit_pause_left > 0.0:
-		return
-	Engine.time_scale = 1.0
-	_hit_pause_left = 0.0
-	set_process(false)
 
 
 func _exit_tree() -> void:
@@ -94,7 +91,6 @@ func _on_swing_landed() -> void:
 	_player.shake_camera()
 	Engine.time_scale = HIT_PAUSE_SCALE
 	_hit_pause_left = HIT_PAUSE_REAL_SECONDS
-	set_process(true)
 
 
 func _spawn_wave() -> void:
@@ -114,7 +110,7 @@ func _spawn_grunt() -> void:
 	if grunt == null:
 		push_error("Arena grunt_scene is not a Grunt.")
 		return
-	grunt.position = SPAWN_POINTS[_spawn_cursor % SPAWN_POINTS.size()]
+	grunt.position = _next_spawn_position()
 	_spawn_cursor += 1
 	_actors.add_child(grunt)
 	grunt.setup(_player)
@@ -125,6 +121,12 @@ func _spawn_grunt() -> void:
 
 func _on_grunt_exited() -> void:
 	_alive = maxi(_alive - 1, 0)
+
+
+func _next_spawn_position() -> Vector2:
+	if _wave == 1 and _spawn_cursor == 0:
+		return FIRST_GRUNT_POSITION
+	return SPAWN_POINTS[_spawn_cursor % SPAWN_POINTS.size()]
 
 
 func _next_interval() -> float:
