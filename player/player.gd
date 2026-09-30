@@ -1,7 +1,7 @@
 class_name Player
 extends CharacterBody2D
 ## Top-down fighter. Owns movement, the swing combo, and the camera shake.
-## Health and hit detection live on child nodes.
+## The swing aims at the mouse cursor. Health and hit detection live on child nodes.
 
 signal attack_landed
 
@@ -76,6 +76,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _state != State.DEAD:
+		_aim_at_cursor()
 	match _state:
 		State.IDLE, State.MOVE:
 			_update_locomotion(delta)
@@ -88,7 +90,6 @@ func _physics_process(delta: float) -> void:
 func _update_locomotion(delta: float) -> void:
 	var direction := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 	if direction != Vector2.ZERO and not _knockback.is_active():
-		_set_facing(direction)
 		_change_state(State.MOVE)
 	else:
 		_change_state(State.IDLE)
@@ -100,6 +101,7 @@ func _update_locomotion(delta: float) -> void:
 
 
 func _start_attack() -> void:
+	_aim_at_cursor()
 	_change_state(State.ATTACK)
 	var step := mini(_combo_step, attack_durations.size() - 1)
 	_hitbox.play(attack_durations[step], hit_active_starts[step], hit_active_ends[step])
@@ -141,6 +143,13 @@ func _move(delta: float, desired: Vector2) -> void:
 	else:
 		velocity = desired
 	move_and_slide()
+
+
+func _aim_at_cursor() -> void:
+	var to_cursor := get_global_mouse_position() - global_position
+	if to_cursor.length_squared() < 1.0:
+		return
+	_set_facing(to_cursor)
 
 
 func _set_facing(direction: Vector2) -> void:
