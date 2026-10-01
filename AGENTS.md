@@ -51,7 +51,7 @@ Call down, signal up. The arena wires the player's `health_changed` and `died` t
 | Movement and swings | `res://player/player.gd` |
 | Hit points | `HealthComponent` on that actor |
 | Armor | `ArmorComponent` on the player |
-| Crit, dodge, and speed | `StatsComponent` on the player |
+| Crit, dodge, speed, stamina, and strength | `StatsComponent` on the player |
 | Active frames of a swing | `Hitbox` |
 | Receiving a hit | `Hurtbox` |
 | Debuffs | `Debuffs` above that actor |

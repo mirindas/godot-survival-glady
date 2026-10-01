@@ -175,7 +175,10 @@ func _try_hit(area: Area2D) -> void:
 
 func _rolled_damage() -> int:
 	var scale := randf_range(0.95, 1.05)
-	var amount := maxi(roundi(float(damage) * scale), 1)
+	var boosted := float(damage) * scale
+	if stats != null:
+		boosted *= stats.strength_scale()
+	var amount := maxi(roundi(boosted), 1)
 	_last_roll_crit = stats != null and stats.roll_crit()
 	if _last_roll_crit:
 		amount *= 2

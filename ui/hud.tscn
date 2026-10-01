@@ -80,13 +80,13 @@ text = "Wave 1    Defeated 0 / 5"
 unique_name_in_owner = true
 offset_left = 24.0
 offset_top = 128.0
-offset_right = 640.0
+offset_right = 1100.0
 offset_bottom = 160.0
 mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 18
-text = "Crit 5%   Dodge 5%   Speed 0%"
+text = "Crit 5%   Dodge 5%   Speed 0%   Stamina 0   Strength 0"
 
 [node name="WaveBanner" type="Label" parent="."]
 unique_name_in_owner = true

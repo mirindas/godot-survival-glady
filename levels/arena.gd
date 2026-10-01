@@ -78,7 +78,13 @@ func _ready() -> void:
 	_player.rend_attack_started.connect(_hud.start_rend_clock)
 	_hud.set_health(health.current_health, health.max_health)
 	_hud.set_armor(_player.armor.current_armor, _player.armor.max_armor)
-	_hud.set_stats(_player.stats.crit_chance, _player.stats.dodge_chance, _player.stats.speed)
+	_hud.set_stats(
+		_player.stats.crit_chance,
+		_player.stats.dodge_chance,
+		_player.stats.speed,
+		_player.stats.stamina,
+		_player.stats.strength
+	)
 	_begin_wave()
 
 
@@ -226,11 +232,30 @@ func _on_enemy_exited() -> void:
 		return
 	_active = maxi(_active - 1, 0)
 	_kills += 1
+	_grant_kill_rewards()
 	_hud.set_enemies(_kills, _wave_size)
 	if _kills < _wave_size or _left_to_spawn > 0:
 		return
+	if not _boss_wave:
+		_grant_points(10, 5)
 	_drop_wave_reward()
 	_start_rest(boss_rest_seconds if _boss_wave else wave_spawn_delay)
+
+
+func _grant_kill_rewards() -> void:
+	if _boss_wave:
+		_grant_points(250, 100)
+		return
+	_grant_points(0, 2)
+
+
+func _grant_points(stamina_points: int, strength_points: int) -> void:
+	if _player == null or _player.stats == null:
+		return
+	if stamina_points > 0:
+		_player.stats.stamina += stamina_points
+	if strength_points > 0:
+		_player.stats.strength += strength_points
 
 
 func _drop_wave_reward() -> void:

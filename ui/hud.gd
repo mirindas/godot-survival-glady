@@ -37,11 +37,13 @@ func set_armor(current: int, maximum: int) -> void:
 	_armor_label.text = "%d / %d" % [current, maximum]
 
 
-func set_stats(crit: float, dodge: float, speed: float) -> void:
-	_stats_label.text = "Crit %s   Dodge %s   Speed %s" % [
+func set_stats(crit: float, dodge: float, speed: float, stamina: int, strength: int) -> void:
+	_stats_label.text = "Crit %s   Dodge %s   Speed %s   Stamina %d   Strength %d" % [
 		_percent(crit, false),
 		_percent(dodge, false),
 		_percent(speed, true),
+		stamina,
+		strength,
 	]
 
 

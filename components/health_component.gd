@@ -13,10 +13,25 @@ var current_health: int:
 		return _current
 
 var _current: int
+var _base_max: int
 
 
 func _ready() -> void:
+	_base_max = max_health
 	_current = max_health
+
+
+## Raises max health from the starting value. Current health gains the new points.
+func apply_bonus_percent(percent: int) -> void:
+	var bonus := maxi(percent, 0)
+	var next_max := maxi(roundi(float(_base_max) * (1.0 + float(bonus) / 100.0)), 1)
+	if next_max == max_health:
+		return
+	var gained := next_max - max_health
+	max_health = next_max
+	if _current > 0:
+		_current = clampi(_current + gained, 1, max_health)
+	health_changed.emit(_current, max_health)
 
 
 func take_damage(amount: int) -> void:

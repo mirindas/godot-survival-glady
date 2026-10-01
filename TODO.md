@@ -96,7 +96,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Player stats**
   State: completed
-  `StatsComponent` on the player. Crit and dodge start at 5% and cannot go below zero. A crit doubles that hit after the damage roll, and its number is larger, italic, and orange. A dodge drops an enemy hit before damage, armor loss, or knockback, and the player shows "dodge" where the damage number would have been. Speed starts at 0%. Above zero moves faster, below zero moves slower, and the result never reverses movement. The HUD shows the three values. The arena wires the signal.
+  `StatsComponent` on the player. Crit and dodge start at 5% and cannot go below zero. A crit doubles that hit after the damage roll, and its number is larger, italic, and orange. A dodge drops an enemy hit before damage, armor loss, or knockback, and the player shows "dodge" where the damage number would have been. Speed starts at 0%. Above zero moves faster, below zero moves slower, and the result never reverses movement. The HUD shows the values. Stamina and strength start at 0 and cannot go below zero. Each 100 stamina adds 1% of the starting health, and that many hit points are added to the current total. Each 150 strength adds 1% to the player's swing damage. A grunt grants 2 strength. Clearing a grunt wave grants 10 stamina and 5 strength. A boss grants 250 stamina and 100 strength instead of those smaller grants. The arena wires the signal.
 
 - [X] **Headless smoke run**
   State: completed

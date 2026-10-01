@@ -2,8 +2,10 @@ class_name StatsComponent
 extends Node
 ## Crit and dodge are chances, never below zero. Speed is a percent change
 ## to movement: above zero is faster, below zero is slower.
+## Stamina and strength are point totals, never below zero.
+## Each 100 stamina adds 1% health. Each 150 strength adds 1% damage.
 
-signal stats_changed(crit: float, dodge: float, speed: float)
+signal stats_changed(crit: float, dodge: float, speed: float, stamina: int, strength: int)
 
 @export_range(0.0, 100.0, 0.1, "suffix:%") var crit_chance: float = 5.0:
 	set(value):
@@ -18,6 +20,16 @@ signal stats_changed(crit: float, dodge: float, speed: float)
 @export_range(-100.0, 300.0, 0.1, "suffix:%") var speed: float = 0.0:
 	set(value):
 		speed = value
+		_notify()
+
+@export_range(0, 1000000, 1) var stamina: int = 0:
+	set(value):
+		stamina = maxi(value, 0)
+		_notify()
+
+@export_range(0, 1000000, 1) var strength: int = 0:
+	set(value):
+		strength = maxi(value, 0)
 		_notify()
 
 
@@ -38,6 +50,16 @@ func speed_scale() -> float:
 	return maxf(1.0 + speed / 100.0, 0.0)
 
 
+## Whole steps only. 199 stamina is still +1% health.
+func health_bonus_percent() -> int:
+	return int(stamina / 100)
+
+
+## Whole steps only. 149 strength is still +0% damage.
+func strength_scale() -> float:
+	return 1.0 + float(int(strength / 150)) / 100.0
+
+
 func _roll(chance: float) -> bool:
 	if chance <= 0.0:
 		return false
@@ -47,4 +69,4 @@ func _roll(chance: float) -> bool:
 func _notify() -> void:
 	if not is_node_ready():
 		return
-	stats_changed.emit(crit_chance, dodge_chance, speed)
+	stats_changed.emit(crit_chance, dodge_chance, speed, stamina, strength)

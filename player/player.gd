@@ -96,6 +96,9 @@ func _ready() -> void:
 	_simple_hitbox.finished.connect(_on_swing_finished)
 	_heavy_hitbox.finished.connect(_on_swing_finished)
 	_rend_hitbox.finished.connect(_on_swing_finished)
+	if stats != null:
+		stats.stats_changed.connect(_on_stats_changed)
+		_on_stats_changed(stats.crit_chance, stats.dodge_chance, stats.speed, stats.stamina, stats.strength)
 	_apply_facing()
 
 
@@ -245,6 +248,12 @@ func _on_swing_finished() -> void:
 		_change_state(State.IDLE)
 	elif _state == State.REND_ATTACK:
 		_change_state(State.IDLE)
+
+
+func _on_stats_changed(_crit: float, _dodge: float, _speed: float, _stamina: int, _strength: int) -> void:
+	if health == null or stats == null:
+		return
+	health.apply_bonus_percent(stats.health_bonus_percent())
 
 
 func _on_attack_landed() -> void:
