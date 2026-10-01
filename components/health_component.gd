@@ -6,7 +6,7 @@ extends Node
 signal health_changed(current: int, maximum: int)
 signal died
 
-@export_range(1, 1000) var max_health: int = 100
+@export_range(1, 1000000) var max_health: int = 100
 
 var current_health: int:
 	get:

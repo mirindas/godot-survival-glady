@@ -12,7 +12,7 @@ const ATTACK_COLOR := Color("ffd29a")
 
 @export_group("Movement")
 @export_range(1.0, 12.0, 0.05, "suffix:widths/s") var move_speed: float = Units.GRUNT_MOVE_SPEED
-@export_range(0.5, 6.0, 0.05, "suffix:widths") var attack_range: float = Units.GRUNT_ATTACK_RANGE
+@export_range(0.5, 20.0, 0.05, "suffix:widths") var attack_range: float = Units.GRUNT_ATTACK_RANGE
 @export_range(0.0, 8.0, 0.05, "suffix:widths/s") var lunge_speed: float = Units.GRUNT_LUNGE_SPEED
 
 @export_group("Attack")
@@ -23,9 +23,9 @@ const ATTACK_COLOR := Color("ffd29a")
 
 @export_group("Drop")
 @export var health_drop_scene: PackedScene
-@export_range(0.0, 1.0, 0.05) var drop_chance: float = 0.4
+@export_range(0.0, 1.0, 0.05) var drop_chance: float = 0.05
 @export var armor_drop_scene: PackedScene
-@export_range(0.0, 1.0, 0.05) var armor_drop_chance: float = 0.4
+@export_range(0.0, 1.0, 0.05) var armor_drop_chance: float = 0.1
 
 @onready var _health: HealthComponent = %HealthComponent as HealthComponent
 @onready var _hitbox: Hitbox = %Hitbox as Hitbox
@@ -73,10 +73,14 @@ func _chase(delta: float) -> void:
 		return
 	var to_target := _target.global_position - global_position
 	_set_facing(to_target)
-	if to_target.length() <= Units.px(attack_range):
+	if _in_attack_range(to_target):
 		_start_attack()
 		return
 	_move(delta, to_target.normalized() * Units.px(move_speed))
+
+
+func _in_attack_range(to_target: Vector2) -> bool:
+	return to_target.length() <= Units.px(attack_range)
 
 
 func _start_attack() -> void:
@@ -171,9 +175,14 @@ func _set_facing(direction: Vector2) -> void:
 
 
 func _apply_facing() -> void:
-	_hitbox.position = _facing * Units.measure(&"swing_reach")
+	var edge := _body_edge(_facing)
+	_hitbox.position = _facing * (edge + Units.measure(&"swing_width") * 0.5)
 	_hitbox.rotation = _facing.angle()
 	queue_redraw()
+
+
+func _body_edge(direction: Vector2) -> float:
+	return Units.body_edge(_body_shape.shape as RectangleShape2D, direction)
 
 
 func _draw() -> void:

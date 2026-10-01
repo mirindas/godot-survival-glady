@@ -76,6 +76,29 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 20
 text = "Wave 1"
 
+[node name="WaveBanner" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -128.0
+offset_right = 420.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 0.91, 0.64, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 48
+text = "Wave 2 incoming"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="DefeatedLabel" type="Label" parent="."]
 unique_name_in_owner = true
 visible = false

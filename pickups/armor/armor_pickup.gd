@@ -5,11 +5,14 @@ extends Area2D
 
 var _collected := false
 
+@onready var _hover: PickupHover = $Hover as PickupHover
+
 
 func _ready() -> void:
 	monitoring = true
 	monitorable = false
 	body_entered.connect(_on_body_entered)
+	_hover.expired.connect(queue_free)
 	_collect_overlaps()
 
 
@@ -39,6 +42,8 @@ func _try_collect(body: Node2D) -> void:
 
 
 func _draw() -> void:
+	_hover.draw_shadow(self)
+	draw_set_transform(_hover.offset(), 0.0, Vector2.ONE)
 	var shield := PackedVector2Array([
 		Vector2(0, -16),
 		Vector2(13, -9),
@@ -48,3 +53,5 @@ func _draw() -> void:
 		Vector2(-13, -9),
 	])
 	draw_colored_polygon(shield, Color("4c9dff"))
+	_hover.draw_timer(self)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

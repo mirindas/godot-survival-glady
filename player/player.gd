@@ -242,10 +242,16 @@ func _set_facing(direction: Vector2) -> void:
 
 func _apply_facing() -> void:
 	var angle := _facing.angle()
+	var edge := _body_edge(_facing)
+	_simple_hitbox.position = _facing * edge
 	_simple_hitbox.rotation = angle
 	_heavy_hitbox.rotation = angle
-	_heavy_hitbox.position = _facing * Units.measure(&"heavy_swing_reach")
+	_heavy_hitbox.position = _facing * (edge + Units.measure(&"heavy_swing_width") * 0.5)
 	queue_redraw()
+
+
+func _body_edge(direction: Vector2) -> float:
+	return Units.body_edge(_body_shape.shape as RectangleShape2D, direction)
 
 
 func _change_state(next: State) -> void:
@@ -283,13 +289,15 @@ func _draw() -> void:
 	draw_rect(Rect2(-size * 0.5, size), color)
 	if _state == State.DEAD:
 		return
+	var edge := _body_edge(_facing)
+	var origin := _facing * edge
 	if _state == State.HEAVY_ATTACK:
-		var reach := Units.measure(&"heavy_swing_reach") + Units.measure(&"heavy_swing_width") * 0.5
-		draw_line(Vector2.ZERO, _facing * reach, Color("ffe0b0"), 8.0)
+		var length := Units.measure(&"heavy_swing_width")
+		draw_line(origin, origin + _facing * length, Color("ffe0b0"), 8.0)
 		return
 	var radius := Units.measure(&"simple_arc_radius")
 	var half := deg_to_rad(SIMPLE_AIM_RADIUS_DEGREES)
-	draw_line(Vector2.ZERO, _facing.rotated(-half) * radius, Color(1, 1, 1, 0.45), 2.0)
-	draw_line(Vector2.ZERO, _facing.rotated(half) * radius, Color(1, 1, 1, 0.45), 2.0)
+	draw_line(origin, origin + _facing.rotated(-half) * radius, Color(1, 1, 1, 0.45), 2.0)
+	draw_line(origin, origin + _facing.rotated(half) * radius, Color(1, 1, 1, 0.45), 2.0)
 	if _state == State.SIMPLE_ATTACK:
-		draw_line(Vector2.ZERO, _facing * radius, Color("fff4c2"), 5.0)
+		draw_line(origin, origin + _facing * radius, Color("fff4c2"), 5.0)

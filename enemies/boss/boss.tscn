@@ -1,0 +1,68 @@
+[gd_scene format=3 uid="uid://d5bosstscene"]
+
+[ext_resource type="Script" uid="uid://c4bossgdscript" path="res://enemies/boss/boss.gd" id="1_boss"]
+[ext_resource type="Script" uid="uid://b7healthcomp1" path="res://components/health_component.gd" id="2_health"]
+[ext_resource type="Script" uid="uid://d9hurtboxcomp" path="res://components/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" uid="uid://c8hitboxcomp2" path="res://components/hitbox.gd" id="4_hitbox"]
+[ext_resource type="Script" uid="uid://a9knockbackgd1" path="res://components/knockback.gd" id="5_knock"]
+[ext_resource type="PackedScene" uid="uid://f5healthpickscn" path="res://pickups/health/health_pickup.tscn" id="6_drop"]
+[ext_resource type="PackedScene" uid="uid://a7armorpickscn" path="res://pickups/armor/armor_pickup.tscn" id="7_armor"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(180, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(180, 240)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
+size = Vector2(200, 140)
+
+[node name="Boss" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 7
+motion_mode = 1
+script = ExtResource("1_boss")
+move_speed = 2.0
+attack_range = 1.5
+lunge_speed = 1.5
+health_drop_scene = ExtResource("6_drop")
+armor_drop_scene = ExtResource("7_armor")
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="HealthComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_health")
+max_health = 350
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+monitorable = true
+script = ExtResource("3_hurtbox")
+health = NodePath("../HealthComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="Hitbox" type="Area2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(230, 0)
+collision_layer = 0
+collision_mask = 32
+monitoring = false
+monitorable = false
+script = ExtResource("4_hitbox")
+damage = 36
+armor_reduction = 5
+damage_color = Color(0.89, 0.22, 0.2, 1)
+damage_font_size = 36
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_hit")
+
+[node name="Knockback" type="Node" parent="."]
+script = ExtResource("5_knock")
+speed = 7.777778

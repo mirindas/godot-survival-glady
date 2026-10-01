@@ -1,10 +1,11 @@
-[gd_scene format=3 uid="uid://j7arenatscnscn"]
+[gd_scene format=3 uid="uid://b1aocduu62ne4"]
 
-[ext_resource type="Script" uid="uid://i6arenagdscript" path="res://levels/arena.gd" id="1_arena"]
-[ext_resource type="PackedScene" uid="uid://f3playertscene" path="res://player/player.tscn" id="2_player"]
+[ext_resource type="Script" uid="uid://co7b60rg7u07v" path="res://levels/arena.gd" id="1_arena"]
+[ext_resource type="PackedScene" uid="uid://blrvvivyy0q0e" path="res://player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://c2grunttscene" path="res://enemies/grunt/grunt.tscn" id="3_grunt"]
-[ext_resource type="PackedScene" uid="uid://m9hudtscnscene" path="res://ui/hud.tscn" id="4_hud"]
-[ext_resource type="Script" uid="uid://a8floorgriddraw" path="res://levels/floor_grid.gd" id="5_grid"]
+[ext_resource type="PackedScene" uid="uid://d5bosstscene" path="res://enemies/boss/boss.tscn" id="6_boss"]
+[ext_resource type="PackedScene" uid="uid://bvc5ldjxfal87" path="res://ui/hud.tscn" id="4_hud"]
+[ext_resource type="Script" uid="uid://cvyf31a60i2re" path="res://levels/floor_grid.gd" id="5_grid"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_horizontal"]
 size = Vector2(2200, 64)
@@ -12,48 +13,48 @@ size = Vector2(2200, 64)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vertical"]
 size = Vector2(64, 1600)
 
-[node name="Arena" type="Node2D"]
+[node name="Arena" type="Node2D" unique_id=756054110]
 script = ExtResource("1_arena")
 grunt_scene = ExtResource("3_grunt")
+boss_scene = ExtResource("6_boss")
 
-[node name="Ground" type="Polygon2D" parent="."]
+[node name="Ground" type="Polygon2D" parent="." unique_id=1382327033]
 color = Color(0.18, 0.15, 0.14, 1)
 polygon = PackedVector2Array(0, 0, 2200, 0, 2200, 1600, 0, 1600)
 
-[node name="Floor" type="Polygon2D" parent="."]
+[node name="Floor" type="Polygon2D" parent="." unique_id=1565406161]
 color = Color(0.29, 0.34, 0.26, 1)
 polygon = PackedVector2Array(64, 64, 2136, 64, 2136, 1536, 64, 1536)
 
-[node name="FloorGrid" type="Node2D" parent="."]
+[node name="FloorGrid" type="Node2D" parent="." unique_id=1768534199]
 script = ExtResource("5_grid")
 
-[node name="Walls" type="StaticBody2D" parent="."]
-collision_layer = 1
+[node name="Walls" type="StaticBody2D" parent="." unique_id=1514966155]
 collision_mask = 0
 
-[node name="North" type="CollisionShape2D" parent="Walls"]
+[node name="North" type="CollisionShape2D" parent="Walls" unique_id=281255649]
 position = Vector2(1100, 32)
 shape = SubResource("RectangleShape2D_horizontal")
 
-[node name="South" type="CollisionShape2D" parent="Walls"]
+[node name="South" type="CollisionShape2D" parent="Walls" unique_id=150569679]
 position = Vector2(1100, 1568)
 shape = SubResource("RectangleShape2D_horizontal")
 
-[node name="West" type="CollisionShape2D" parent="Walls"]
+[node name="West" type="CollisionShape2D" parent="Walls" unique_id=214998975]
 position = Vector2(32, 800)
 shape = SubResource("RectangleShape2D_vertical")
 
-[node name="East" type="CollisionShape2D" parent="Walls"]
+[node name="East" type="CollisionShape2D" parent="Walls" unique_id=2002429479]
 position = Vector2(2168, 800)
 shape = SubResource("RectangleShape2D_vertical")
 
-[node name="Actors" type="Node2D" parent="."]
+[node name="Actors" type="Node2D" parent="." unique_id=743785915]
 unique_name_in_owner = true
 y_sort_enabled = true
 
-[node name="Player" parent="Actors" instance=ExtResource("2_player")]
+[node name="Player" parent="Actors" unique_id=2074973816 instance=ExtResource("2_player")]
 unique_name_in_owner = true
 position = Vector2(780, 800)
 
-[node name="Hud" parent="." instance=ExtResource("4_hud")]
+[node name="Hud" parent="." unique_id=877519569 instance=ExtResource("4_hud")]
 unique_name_in_owner = true

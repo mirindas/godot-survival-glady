@@ -52,7 +52,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Survival loop**
   State: completed
-  `res://levels/arena.gd` spawns grunts in waves, shortens the gap between waves, and stops at 8 alive. The run ends through the existing defeat and restart. The dummy scene remains, but the arena no longer places one in the room.
+  A wave starts only after every enemy from the previous one is dead. Wave 1 is 5 grunts. Each later grunt wave is 22% larger than the last, rounded. After a grunt wave, spawning waits 5 seconds. Enemies then appear in groups of up to 5, each at its own spot between 5 and 15 player-widths away, with 0.15–0.4 seconds between groups. At most 50 enemies are alive; the rest wait in a queue. The HUD shows "Wave N incoming" above center when a wave begins. The run still ends through defeat and restart.
 
 - [X] **Attack chain**
   State: completed
@@ -60,7 +60,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Heavy attack**
   State: completed
-  Right click, K, gamepad Y, or the left trigger. One frontal swing, 45 damage, far edge at 126 px. The player is stopped until it finishes. It does not continue the simple chain.
+  Right click, K, gamepad Y, or the left trigger. One frontal swing, 45 damage, 72 px long starting at the body edge. The player is stopped until it finishes. It does not continue the simple chain.
 
 - [X] **Size units**
   State: completed
@@ -72,7 +72,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Pickups**
   State: completed
-  `res://pickups/health/health_pickup.tscn` restores 30 health through `HealthComponent.heal` when the player overlaps it. A grunt has a 40% chance to leave one behind on death. No inventory. Armor drops the same way: a blue shield restores 15 armor, also at 40%.
+  `res://pickups/health/health_pickup.tscn` restores 30 health through `HealthComponent.heal` when the player overlaps it. A grunt has a 5% chance to leave one behind on death. No inventory. Armor drops the same way: a blue shield restores 15 armor, at 10%. Both icons float above a small shadow. The pickup volume stays on the ground. A health drop disappears after 25 seconds, an armor drop after 35. A small clock above the icon shows the time left.
 
 - [X] **Armor**
   State: completed
@@ -81,6 +81,10 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 - [X] **Player defeat and restart**
   State: completed
   When the player reaches 0 health, the HUD shows a large red "DEFEATED" in the center and reloads the arena when `attack` is pressed. Nothing is kept across the reload, so no autoload is involved.
+
+- [X] **Boss waves**
+  State: completed
+  `res://enemies/boss/boss.tscn` is a grunt scaled to 5 times the player body (180×240). The first boss has 350 health and 36 damage. Each later boss has 13% more health and 2% more damage than the one before, rounded. It moves at 60% of the grunt's speed. Its swing starts at the grunt's attack range, measured from the boss body. Waves 5, 10, 15, and so on spawn that boss alone. Killing it waits 10 seconds, then the next grunt wave starts. Grunt counts keep growing from the last grunt wave, so a boss wave does not reset them.
 
 - [X] **Headless smoke run**
   State: completed
