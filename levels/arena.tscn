@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://blrvvivyy0q0e" path="res://player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://c2grunttscene" path="res://enemies/grunt/grunt.tscn" id="3_grunt"]
 [ext_resource type="PackedScene" uid="uid://d5bosstscene" path="res://enemies/boss/boss.tscn" id="6_boss"]
+[ext_resource type="PackedScene" uid="uid://f5healthpickscn" path="res://pickups/health/health_pickup.tscn" id="7_health"]
+[ext_resource type="PackedScene" uid="uid://a7armorpickscn" path="res://pickups/armor/armor_pickup.tscn" id="8_armor"]
 [ext_resource type="PackedScene" uid="uid://bvc5ldjxfal87" path="res://ui/hud.tscn" id="4_hud"]
 [ext_resource type="Script" uid="uid://cvyf31a60i2re" path="res://levels/floor_grid.gd" id="5_grid"]
 
@@ -17,6 +19,8 @@ size = Vector2(64, 1600)
 script = ExtResource("1_arena")
 grunt_scene = ExtResource("3_grunt")
 boss_scene = ExtResource("6_boss")
+health_drop_scene = ExtResource("7_health")
+armor_drop_scene = ExtResource("8_armor")
 
 [node name="Ground" type="Polygon2D" parent="." unique_id=1382327033]
 color = Color(0.18, 0.15, 0.14, 1)

@@ -3,17 +3,22 @@ extends Node2D
 ## Wires the player's health to the HUD. The HUD does not search for the player.
 ## Every 5th wave spawns one boss. Killing it waits 10 seconds, then the next wave starts.
 ## Other waves wait 5 seconds, then spawn in batches inside a ring around the player.
+## Every 3rd cleared wave leaves a health or armor pickup beside the player.
 
 const HIT_PAUSE_SCALE := 0.08
 const HIT_PAUSE_REAL_SECONDS := 0.055
 const SPAWN_MIN := Vector2(160, 160)
 const SPAWN_MAX := Vector2(2040, 1440)
 const SPAWN_ATTEMPTS := 8
+const REWARD_DISTANCE := 1.5
 
 @export var grunt_scene: PackedScene
 @export var boss_scene: PackedScene
+@export var health_drop_scene: PackedScene
+@export var armor_drop_scene: PackedScene
 @export_range(1, 40) var first_wave_count: int = 5
 @export_range(1.0, 3.0, 0.01) var wave_growth: float = 1.22
+@export_range(1, 20) var reward_every_waves: int = 3
 @export_group("Spawning")
 @export_range(0.0, 30.0, 0.5, "suffix:s") var wave_spawn_delay: float = 5.0
 @export_range(0.05, 2.0, 0.05, "suffix:s") var min_spawn_gap: float = 0.15
@@ -224,7 +229,26 @@ func _on_enemy_exited() -> void:
 	_hud.set_enemies(_kills, _wave_size)
 	if _kills < _wave_size or _left_to_spawn > 0:
 		return
+	_drop_wave_reward()
 	_start_rest(boss_rest_seconds if _boss_wave else wave_spawn_delay)
+
+
+func _drop_wave_reward() -> void:
+	if reward_every_waves <= 0 or _wave % reward_every_waves != 0:
+		return
+	var scene := health_drop_scene if randf() < 0.5 else armor_drop_scene
+	if scene == null:
+		scene = armor_drop_scene if scene == health_drop_scene else health_drop_scene
+	if scene == null or _player == null:
+		push_error("Arena is missing a wave reward pickup.")
+		return
+	var drop := scene.instantiate() as Node2D
+	if drop == null:
+		return
+	var offset := Vector2.from_angle(randf() * TAU) * Units.px(REWARD_DISTANCE)
+	var point := (_player.global_position + offset).clamp(SPAWN_MIN, SPAWN_MAX)
+	drop.position = _actors.to_local(point)
+	_actors.add_child(drop)
 
 
 func _start_rest(seconds: float) -> void:

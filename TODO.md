@@ -84,7 +84,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Boss waves**
   State: completed
-  `res://enemies/boss/boss.tscn` is a grunt scaled to 5 times the player body (180×240). The first boss has 350 health and 36 damage. Each later boss has 13% more health and 2% more damage than the one before, rounded. It moves at 60% of the grunt's speed. Its swing starts at the grunt's attack range, measured from the boss body. Waves 5, 10, 15, and so on spawn that boss alone. Killing it waits 10 seconds, then the next grunt wave starts. Grunt counts keep growing from the last grunt wave, so a boss wave does not reset them. The wave line shows defeated enemies as N / X.
+  `res://enemies/boss/boss.tscn` is a grunt scaled to 5 times the player body (180×240). The first boss has 350 health and 36 damage. Each later boss has 13% more health and 2% more damage than the one before, rounded. It moves at 60% of the grunt's speed. Its swing starts at the grunt's attack range, measured from the boss body. Waves 5, 10, 15, and so on spawn that boss alone. Killing it waits 10 seconds, then the next grunt wave starts. Grunt counts keep growing from the last grunt wave, so a boss wave does not reset them. The wave line shows defeated enemies as N / X. Clearing every 3rd wave leaves one pickup beside the player, health or armor, chosen at random.
 
 - [X] **Enemy health bars**
   State: completed
