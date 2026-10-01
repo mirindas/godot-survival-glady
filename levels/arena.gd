@@ -144,6 +144,7 @@ func _begin_wave() -> void:
 		_left_to_spawn = _wave_size
 	_spawn_wait = _next_spawn_gap()
 	_hud.set_wave(_wave, _boss_wave)
+	_hud.set_enemies(_kills, _wave_size)
 	_hud.show_wave_incoming(_wave, _boss_wave)
 
 
@@ -220,6 +221,7 @@ func _on_enemy_exited() -> void:
 		return
 	_active = maxi(_active - 1, 0)
 	_kills += 1
+	_hud.set_enemies(_kills, _wave_size)
 	if _kills < _wave_size or _left_to_spawn > 0:
 		return
 	_start_rest(boss_rest_seconds if _boss_wave else wave_spawn_delay)

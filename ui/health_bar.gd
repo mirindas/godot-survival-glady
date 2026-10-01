@@ -34,13 +34,13 @@ func _draw() -> void:
 	var fill := inner
 	fill.size.x *= _fraction
 	if fill.size.x > 0.0:
-		draw_rect(fill, _fill_color())
+		draw_rect(fill, fill_color(_fraction))
 	draw_rect(outer.grow(-1.0), BORDER, false, 2.0)
 
 
-func _fill_color() -> Color:
-	if _fraction < 0.10:
+static func fill_color(fraction: float) -> Color:
+	if fraction < 0.10:
 		return RED
-	if _fraction < 0.30:
+	if fraction < 0.30:
 		return ORANGE
 	return GREEN

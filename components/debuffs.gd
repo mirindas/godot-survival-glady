@@ -31,7 +31,7 @@ func place_above_body() -> void:
 	var half_height := 24.0
 	if rect != null:
 		half_height = rect.size.y * 0.5
-	position = Vector2(0.0, -half_height - GAP)
+	position = Vector2(0.0, -half_height - GAP - EnemyHealthBar.BAR_SIZE.y - EnemyHealthBar.HEAD_GAP)
 
 
 func _on_child_exiting(_child: Node) -> void:

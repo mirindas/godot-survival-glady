@@ -56,6 +56,7 @@ Call down, signal up. The arena wires the player's `health_changed` and `died` t
 | Receiving a hit | `Hurtbox` |
 | Debuffs | `Debuffs` above that actor |
 | Bleed | `Bleed` inside that actor's debuffs |
+| Enemy health bar | `EnemyHealthBar` above that enemy |
 | Who is in the room | `res://levels/arena.gd` |
 | Health text, stats, and attack slots | `res://ui/hud.gd` |
 

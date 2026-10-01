@@ -74,7 +74,7 @@ mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 20
-text = "Wave 1"
+text = "Wave 1    Defeated 0 / 5"
 
 [node name="StatsLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -136,36 +136,43 @@ vertical_alignment = 1
 
 [node name="HintLabel" type="Label" parent="."]
 unique_name_in_owner = true
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = -112.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12
+text = "WASD or arrows to move
+Mouse aims
+Left click or 1 simple
+Right click or 2 heavy
+3 rend"
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="AttackSlots" type="HBoxContainer" parent="."]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -460.0
-offset_top = -48.0
-offset_right = 460.0
-offset_bottom = -16.0
+offset_left = -106.0
+offset_top = -84.0
+offset_right = 106.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 18
-text = "WASD or arrows to move    Mouse aims    Left click or J simple    Right click or K heavy    3 rend"
-horizontal_alignment = 1
-
-[node name="AttackSlots" type="HBoxContainer" parent="."]
-anchors_preset = 2
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 0.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -84.0
-offset_right = 232.0
-offset_bottom = -20.0
-grow_vertical = 0
-mouse_filter = 2
+alignment = 1
 theme_override_constants/separation = 10
 
 [node name="SimpleAttack" type="Control" parent="AttackSlots"]

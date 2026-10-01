@@ -67,6 +67,12 @@ func _apply_body_size() -> void:
 		push_error("Boss is missing Hurtbox/CollisionShape2D.")
 		return
 	_resize(hurt_collision, size)
+	var bar := get_node_or_null("HealthBar") as EnemyHealthBar
+	if bar != null:
+		bar.place_above_body()
+	var debuffs := get_node_or_null("Debuffs") as Debuffs
+	if debuffs != null:
+		debuffs.place_above_body()
 
 
 func _resize(collision: CollisionShape2D, size: Vector2) -> void:

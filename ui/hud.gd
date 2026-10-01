@@ -5,6 +5,10 @@ extends CanvasLayer
 
 var _banner_id := 0
 var _rest_banner := false
+var _wave_number := 1
+var _wave_boss := false
+var _enemies_defeated := 0
+var _enemies_total := 0
 
 @onready var _health_bar: HealthBar = %HealthBar
 @onready var _health_label: Label = %HealthLabel
@@ -51,10 +55,20 @@ func _percent(value: float, signed: bool) -> String:
 
 
 func set_wave(wave: int, boss: bool = false) -> void:
-	if boss:
-		_wave_label.text = "Wave %d  Boss" % wave
-	else:
-		_wave_label.text = "Wave %d" % wave
+	_wave_number = wave
+	_wave_boss = boss
+	_write_wave_label()
+
+
+func set_enemies(defeated: int, total: int) -> void:
+	_enemies_defeated = maxi(defeated, 0)
+	_enemies_total = maxi(total, 0)
+	_write_wave_label()
+
+
+func _write_wave_label() -> void:
+	var title := "Wave %d  Boss" % _wave_number if _wave_boss else "Wave %d" % _wave_number
+	_wave_label.text = "%s    Defeated %d / %d" % [title, _enemies_defeated, _enemies_total]
 
 
 func show_wave_incoming(wave: int, boss: bool = false) -> void:

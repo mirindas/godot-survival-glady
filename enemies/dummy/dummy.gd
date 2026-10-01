@@ -10,6 +10,7 @@ var _flash: Tween
 func _ready() -> void:
 	_health.health_changed.connect(_on_health_changed)
 	_health.died.connect(queue_free)
+	EnemyHealthBar.attach(self, _health)
 
 
 func _on_health_changed(current: int, _maximum: int) -> void:
@@ -17,9 +18,9 @@ func _on_health_changed(current: int, _maximum: int) -> void:
 		return
 	if _flash != null and _flash.is_valid():
 		_flash.kill()
-	modulate = Color(1.0, 0.45, 0.45)
+	self_modulate = Color(1.0, 0.45, 0.45)
 	_flash = create_tween()
-	_flash.tween_property(self, "modulate", Color.WHITE, 0.12)
+	_flash.tween_property(self, "self_modulate", Color.WHITE, 0.12)
 
 
 func _draw() -> void:

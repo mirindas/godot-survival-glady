@@ -53,6 +53,7 @@ func _ready() -> void:
 	_hitbox.hit_landed.connect(_on_attack_landed)
 	_hitbox.finished.connect(_on_swing_finished)
 	_apply_facing()
+	EnemyHealthBar.attach(self, _health)
 
 
 func _physics_process(delta: float) -> void:
@@ -127,9 +128,9 @@ func _on_health_changed(current: int, _maximum: int) -> void:
 		return
 	if _flash != null and _flash.is_valid():
 		_flash.kill()
-	modulate = Color(1.0, 0.45, 0.45)
+	self_modulate = Color(1.0, 0.45, 0.45)
 	_flash = create_tween()
-	_flash.tween_property(self, "modulate", Color.WHITE, 0.12)
+	_flash.tween_property(self, "self_modulate", Color.WHITE, 0.12)
 
 
 func _on_died() -> void:
