@@ -20,7 +20,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Input actions**
   State: completed
-  `move_left`, `move_right`, `move_up`, `move_down`, `attack`, and `heavy_attack` cover keyboard, mouse, and a basic gamepad. `attack` is the simple swing. Gameplay reads actions, not raw key codes.
+  `move_left`, `move_right`, `move_up`, `move_down`, `attack`, and `heavy_attack` cover keyboard, mouse, and a basic gamepad. `attack` is the simple swing: left click or 1. `heavy_attack` is right click or 2. Gameplay reads actions, not raw key codes.
 
 - [X] **Physics layers**
   State: completed
@@ -28,7 +28,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Shared combat nodes**
   State: completed
-  `res://components/health_component.gd` holds hit points and emits `health_changed` and `died`. `Hitbox` enables for the active frames of a swing and hits each hurtbox once. `Hurtbox` forwards the hit to health.
+  `res://components/health_component.gd` holds hit points and emits `health_changed` and `died`. `Hitbox` enables for the active frames of a swing and hits each hurtbox once. Each hit rolls that swing's damage from 5% under to 5% over, then rounds to a whole number. `Hurtbox` forwards the hit to health.
 
 - [X] **Player movement and swing**
   State: completed
@@ -60,7 +60,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Heavy attack**
   State: completed
-  Right click, K, gamepad Y, or the left trigger. One frontal swing, 45 damage, 72 px long starting at the body edge. The player is stopped until it finishes. It does not continue the simple chain.
+  Right click or 2, and also K, gamepad Y, or the left trigger. One frontal swing, 45 damage, 108 px long starting at the body edge. The player is stopped until it finishes. It does not continue the simple chain.
 
 - [X] **Size units**
   State: completed

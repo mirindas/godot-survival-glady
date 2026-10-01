@@ -14,7 +14,7 @@ size = Vector2(36, 48)
 size = Vector2(36, 48)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_heavy"]
-size = Vector2(72, 36)
+size = Vector2(108, 36)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2

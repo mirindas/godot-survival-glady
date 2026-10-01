@@ -149,11 +149,16 @@ func _try_hit(area: Area2D) -> void:
 	if hurtbox == null or _already_hit.has(hurtbox):
 		return
 	_already_hit.append(hurtbox)
-	var applied := hurtbox.receive_hit(damage, _attacker_position(), armor_reduction)
+	var applied := hurtbox.receive_hit(_rolled_damage(), _attacker_position(), armor_reduction)
 	if applied <= 0:
 		return
 	_spawn_damage_number(hurtbox, applied)
 	hit_landed.emit()
+
+
+func _rolled_damage() -> int:
+	var scale := randf_range(0.95, 1.05)
+	return maxi(roundi(float(damage) * scale), 1)
 
 
 func _spawn_damage_number(hurtbox: Hurtbox, amount: int) -> void:
