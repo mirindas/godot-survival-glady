@@ -17,6 +17,7 @@ var _rest_banner := false
 @onready var _defeated_label: Label = %DefeatedLabel
 @onready var _simple_slot: AttackSlot = %SimpleAttack
 @onready var _heavy_slot: AttackSlot = %HeavyAttack
+@onready var _rend_slot: AttackSlot = %RendAttack
 
 
 func set_health(current: int, maximum: int) -> void:
@@ -95,6 +96,14 @@ func start_heavy_clock(duration: float) -> void:
 	_heavy_slot.start_clock(duration)
 
 
+func start_rend_clock(duration: float) -> void:
+	_rend_slot.start_clock(duration)
+
+
+func end_rend_clock() -> void:
+	_rend_slot.end_clock()
+
+
 func show_defeated() -> void:
 	_defeated_label.visible = true
 	_rest_banner = false
@@ -103,3 +112,4 @@ func show_defeated() -> void:
 	_hint_label.text = "Press attack to restart"
 	end_simple_clock()
 	_heavy_slot.end_clock()
+	end_rend_clock()

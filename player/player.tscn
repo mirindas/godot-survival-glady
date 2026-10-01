@@ -78,6 +78,18 @@ damage_font_size = 36
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HeavyHitbox"]
 shape = SubResource("RectangleShape2D_heavy")
 
+[node name="RendHitbox" type="Area2D" parent="." node_paths=PackedStringArray("stats")]
+unique_name_in_owner = true
+collision_layer = 8
+collision_mask = 16
+monitoring = false
+monitorable = false
+script = ExtResource("4_hitbox")
+stats = NodePath("../StatsComponent")
+damage = 13
+damage_color = Color(0.894, 0.271, 0.227, 1)
+damage_font_size = 28
+
 [node name="Knockback" type="Node" parent="."]
 script = ExtResource("5_knock")
 

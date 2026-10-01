@@ -151,7 +151,7 @@ mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 18
-text = "WASD or arrows to move    Mouse aims    Left click or J simple    Right click or K heavy"
+text = "WASD or arrows to move    Mouse aims    Left click or J simple    Right click or K heavy    3 rend"
 horizontal_alignment = 1
 
 [node name="AttackSlots" type="HBoxContainer" parent="."]
@@ -162,7 +162,7 @@ anchor_right = 0.0
 anchor_bottom = 1.0
 offset_left = 20.0
 offset_top = -84.0
-offset_right = 158.0
+offset_right = 232.0
 offset_bottom = -20.0
 grow_vertical = 0
 mouse_filter = 2
@@ -182,3 +182,11 @@ layout_mode = 2
 mouse_filter = 2
 script = ExtResource("2_slot")
 kind = 1
+
+[node name="RendAttack" type="Control" parent="AttackSlots"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("2_slot")
+kind = 2

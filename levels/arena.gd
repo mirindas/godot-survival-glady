@@ -70,6 +70,7 @@ func _ready() -> void:
 	_player.simple_attack_started.connect(_hud.start_simple_clock)
 	_player.simple_attack_ended.connect(_hud.end_simple_clock)
 	_player.heavy_attack_started.connect(_hud.start_heavy_clock)
+	_player.rend_attack_started.connect(_hud.start_rend_clock)
 	_hud.set_health(health.current_health, health.max_health)
 	_hud.set_armor(_player.armor.current_armor, _player.armor.max_armor)
 	_hud.set_stats(_player.stats.crit_chance, _player.stats.dodge_chance, _player.stats.speed)

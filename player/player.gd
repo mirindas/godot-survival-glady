@@ -1,9 +1,11 @@
 class_name Player
 extends CharacterBody2D
-## Top-down fighter. Owns movement, both swings, and the camera shake.
+## Top-down fighter. Owns movement, swings, and the camera shake.
 ## Simple attack hits 45° to either side of the cursor and does not stop movement.
 ## Heavy attack is a longer frontal swing that plants the body until it ends.
-## Using it starts a cooldown that ignores further heavy presses.
+## Rend matches the simple arc, deals half that damage, and bleeds each target.
+## Using heavy starts a cooldown that ignores further heavy presses.
+## Rend waits 6 seconds before it can be used again.
 ## Each swing locks the cursor direction from the moment it starts.
 ## Health, armor, and stats live on child nodes.
 
@@ -11,12 +13,15 @@ signal attack_landed
 signal simple_attack_started(duration: float)
 signal simple_attack_ended
 signal heavy_attack_started(duration: float)
+signal rend_attack_started(duration: float)
 
-enum State { IDLE, MOVE, SIMPLE_ATTACK, HEAVY_ATTACK, DEAD }
+enum State { IDLE, MOVE, SIMPLE_ATTACK, HEAVY_ATTACK, REND_ATTACK, DEAD }
 
 const BODY_COLOR := Color("4c7dff")
 const SIMPLE_COLOR := Color("9eb6ff")
 const HEAVY_COLOR := Color("ffb45a")
+const REND_COLOR := Color("e4453a")
+const REND_SWING := Color("ff8a80")
 const SHAKE_TIME := 0.12
 const SIMPLE_AIM_RADIUS_DEGREES := 45.0
 
@@ -34,11 +39,18 @@ const SIMPLE_AIM_RADIUS_DEGREES := 45.0
 @export_range(0.05, 1.5, 0.01, "suffix:s") var heavy_active_end: float = 0.32
 @export_range(0.0, 5.0, 0.05, "suffix:s") var heavy_cooldown: float = 1.5
 
+@export_group("Rend")
+@export_range(0.05, 1.5, 0.01, "suffix:s") var rend_duration: float = 0.32
+@export_range(0.0, 1.5, 0.01, "suffix:s") var rend_active_start: float = 0.08
+@export_range(0.05, 1.5, 0.01, "suffix:s") var rend_active_end: float = 0.18
+@export_range(0.0, 20.0, 0.05, "suffix:s") var rend_cooldown: float = 6.0
+
 @onready var health: HealthComponent = %HealthComponent as HealthComponent
 @onready var armor: ArmorComponent = %ArmorComponent as ArmorComponent
 @onready var stats: StatsComponent = %StatsComponent as StatsComponent
 @onready var _simple_hitbox: Hitbox = %SimpleHitbox as Hitbox
 @onready var _heavy_hitbox: Hitbox = %HeavyHitbox as Hitbox
+@onready var _rend_hitbox: Hitbox = %RendHitbox as Hitbox
 @onready var _hurtbox: Hurtbox = $Hurtbox as Hurtbox
 @onready var _knockback: Knockback = $Knockback as Knockback
 @onready var _camera: Camera2D = $Camera2D
@@ -48,9 +60,11 @@ var _state: State = State.IDLE
 var _facing := Vector2.RIGHT
 var _simple_requested := false
 var _heavy_requested := false
+var _rend_requested := false
 var _combo_queued := false
 var _combo_step := 0
 var _heavy_cooldown := 0.0
+var _rend_cooldown := 0.0
 var _shake_left := 0.0
 
 
@@ -64,7 +78,11 @@ func _ready() -> void:
 		assert(simple_durations[step] >= simple_active_ends[step])
 	assert(heavy_active_end > heavy_active_start)
 	assert(heavy_duration >= heavy_active_end)
+	assert(rend_active_end > rend_active_start)
+	assert(rend_duration >= rend_active_end)
 	_simple_hitbox.setup_arc(Units.measure(&"simple_arc_radius"), SIMPLE_AIM_RADIUS_DEGREES * 2.0)
+	_rend_hitbox.setup_arc(Units.measure(&"simple_arc_radius"), SIMPLE_AIM_RADIUS_DEGREES * 2.0)
+	_rend_hitbox.damage = maxi(roundi(float(_simple_hitbox.damage) * 0.5), 1)
 	_heavy_hitbox.apply_rectangle(
 		Units.measure(&"heavy_swing_width"),
 		Units.measure(&"heavy_swing_height")
@@ -73,8 +91,11 @@ func _ready() -> void:
 	_hurtbox.hit_received.connect(_on_hit_received)
 	_simple_hitbox.hit_landed.connect(_on_attack_landed)
 	_heavy_hitbox.hit_landed.connect(_on_attack_landed)
+	_rend_hitbox.hit_landed.connect(_on_attack_landed)
+	_rend_hitbox.struck.connect(_on_rend_struck)
 	_simple_hitbox.finished.connect(_on_swing_finished)
 	_heavy_hitbox.finished.connect(_on_swing_finished)
+	_rend_hitbox.finished.connect(_on_swing_finished)
 	_apply_facing()
 
 
@@ -103,17 +124,22 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed(&"heavy_attack"):
 		_request_heavy()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed(&"rend"):
+		_request_rend()
+		get_viewport().set_input_as_handled()
 
 
 func _physics_process(delta: float) -> void:
 	if _heavy_cooldown > 0.0:
 		_heavy_cooldown = maxf(_heavy_cooldown - delta, 0.0)
+	if _rend_cooldown > 0.0:
+		_rend_cooldown = maxf(_rend_cooldown - delta, 0.0)
 	if _state == State.IDLE or _state == State.MOVE:
 		_aim_at_cursor()
 	match _state:
 		State.IDLE, State.MOVE:
 			_update_locomotion(delta)
-		State.SIMPLE_ATTACK:
+		State.SIMPLE_ATTACK, State.REND_ATTACK:
 			var direction := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
 			_move(delta, direction * _travel_speed())
 		State.HEAVY_ATTACK:
@@ -132,8 +158,14 @@ func _update_locomotion(delta: float) -> void:
 	if _heavy_requested:
 		_heavy_requested = false
 		_simple_requested = false
+		_rend_requested = false
 		_combo_step = 0
 		_start_heavy()
+	elif _rend_requested:
+		_rend_requested = false
+		_simple_requested = false
+		_combo_step = 0
+		_start_rend()
 	elif _simple_requested:
 		_simple_requested = false
 		_combo_step = 0
@@ -143,7 +175,7 @@ func _update_locomotion(delta: float) -> void:
 func _request_simple() -> void:
 	if _state == State.SIMPLE_ATTACK:
 		_combo_queued = true
-	elif _state != State.HEAVY_ATTACK:
+	elif _state == State.IDLE or _state == State.MOVE:
 		_simple_requested = true
 
 
@@ -154,9 +186,17 @@ func _request_heavy() -> void:
 		_heavy_requested = true
 
 
+func _request_rend() -> void:
+	if _rend_cooldown > 0.0:
+		return
+	if _state == State.IDLE or _state == State.MOVE:
+		_rend_requested = true
+
+
 func _start_simple() -> void:
 	_aim_at_cursor()
 	_heavy_hitbox.cancel()
+	_rend_hitbox.cancel()
 	_change_state(State.SIMPLE_ATTACK)
 	var step := mini(_combo_step, simple_durations.size() - 1)
 	var duration := simple_durations[step]
@@ -168,11 +208,24 @@ func _start_simple() -> void:
 func _start_heavy() -> void:
 	_aim_at_cursor()
 	_simple_hitbox.cancel()
+	_rend_hitbox.cancel()
 	_combo_queued = false
 	_heavy_cooldown = heavy_cooldown
 	_change_state(State.HEAVY_ATTACK)
 	_heavy_hitbox.play(heavy_duration, heavy_active_start, heavy_active_end)
 	heavy_attack_started.emit(heavy_cooldown)
+	queue_redraw()
+
+
+func _start_rend() -> void:
+	_aim_at_cursor()
+	_simple_hitbox.cancel()
+	_heavy_hitbox.cancel()
+	_combo_queued = false
+	_change_state(State.REND_ATTACK)
+	_rend_cooldown = rend_cooldown
+	_rend_hitbox.play(rend_duration, rend_active_start, rend_active_end)
+	rend_attack_started.emit(rend_cooldown)
 	queue_redraw()
 
 
@@ -190,10 +243,16 @@ func _on_swing_finished() -> void:
 		simple_attack_ended.emit()
 	elif _state == State.HEAVY_ATTACK:
 		_change_state(State.IDLE)
+	elif _state == State.REND_ATTACK:
+		_change_state(State.IDLE)
 
 
 func _on_attack_landed() -> void:
 	attack_landed.emit()
+
+
+func _on_rend_struck(hurtbox: Hurtbox) -> void:
+	Bleed.apply_to(hurtbox.get_parent(), hurtbox.health)
 
 
 func _on_hit_received(from_position: Vector2) -> void:
@@ -201,7 +260,7 @@ func _on_hit_received(from_position: Vector2) -> void:
 		return
 	_knockback.apply(from_position, global_position, -_facing)
 	var ended_simple := _state == State.SIMPLE_ATTACK
-	if _state != State.SIMPLE_ATTACK and _state != State.HEAVY_ATTACK:
+	if _state != State.SIMPLE_ATTACK and _state != State.HEAVY_ATTACK and _state != State.REND_ATTACK:
 		return
 	_cancel_attacks()
 	_change_state(State.IDLE)
@@ -214,8 +273,10 @@ func _cancel_attacks() -> void:
 	_combo_step = 0
 	_simple_requested = false
 	_heavy_requested = false
+	_rend_requested = false
 	_simple_hitbox.cancel()
 	_heavy_hitbox.cancel()
+	_rend_hitbox.cancel()
 
 
 func _travel_speed() -> float:
@@ -251,6 +312,8 @@ func _apply_facing() -> void:
 	var edge := _body_edge(_facing)
 	_simple_hitbox.position = _facing * edge
 	_simple_hitbox.rotation = angle
+	_rend_hitbox.position = _facing * edge
+	_rend_hitbox.rotation = angle
 	_heavy_hitbox.rotation = angle
 	_heavy_hitbox.position = _facing * (edge + Units.measure(&"heavy_swing_width") * 0.5)
 	queue_redraw()
@@ -290,6 +353,8 @@ func _draw() -> void:
 		color = SIMPLE_COLOR.lerp(Color.WHITE, blend * 0.45)
 	elif _state == State.HEAVY_ATTACK:
 		color = HEAVY_COLOR
+	elif _state == State.REND_ATTACK:
+		color = REND_COLOR
 	elif _state == State.DEAD:
 		color = Color(0.35, 0.38, 0.45)
 	draw_rect(Rect2(-size * 0.5, size), color)
@@ -303,7 +368,10 @@ func _draw() -> void:
 		return
 	var radius := Units.measure(&"simple_arc_radius")
 	var half := deg_to_rad(SIMPLE_AIM_RADIUS_DEGREES)
-	draw_line(origin, origin + _facing.rotated(-half) * radius, Color(1, 1, 1, 0.45), 2.0)
-	draw_line(origin, origin + _facing.rotated(half) * radius, Color(1, 1, 1, 0.45), 2.0)
+	var guide := REND_SWING if _state == State.REND_ATTACK else Color(1, 1, 1, 0.45)
+	draw_line(origin, origin + _facing.rotated(-half) * radius, guide, 2.0)
+	draw_line(origin, origin + _facing.rotated(half) * radius, guide, 2.0)
 	if _state == State.SIMPLE_ATTACK:
 		draw_line(origin, origin + _facing * radius, Color("fff4c2"), 5.0)
+	elif _state == State.REND_ATTACK:
+		draw_line(origin, origin + _facing * radius, REND_COLOR, 5.0)

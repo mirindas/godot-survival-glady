@@ -20,7 +20,7 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 
 - [X] **Input actions**
   State: completed
-  `move_left`, `move_right`, `move_up`, `move_down`, `attack`, and `heavy_attack` cover keyboard, mouse, and a basic gamepad. `attack` is the simple swing: left click or 1. `heavy_attack` is right click or 2. Gameplay reads actions, not raw key codes.
+  `move_left`, `move_right`, `move_up`, `move_down`, `attack`, `heavy_attack`, and `rend` cover keyboard, mouse, and a basic gamepad. `attack` is the simple swing: left click or 1. `heavy_attack` is right click or 2. `rend` is key 3. Gameplay reads actions, not raw key codes.
 
 - [X] **Physics layers**
   State: completed
@@ -85,6 +85,10 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
 - [X] **Boss waves**
   State: completed
   `res://enemies/boss/boss.tscn` is a grunt scaled to 5 times the player body (180×240). The first boss has 350 health and 36 damage. Each later boss has 13% more health and 2% more damage than the one before, rounded. It moves at 60% of the grunt's speed. Its swing starts at the grunt's attack range, measured from the boss body. Waves 5, 10, 15, and so on spawn that boss alone. Killing it waits 10 seconds, then the next grunt wave starts. Grunt counts keep growing from the last grunt wave, so a boss wave does not reset them.
+
+- [X] **Rend**
+  State: completed
+  Key 3, then a 6 second cooldown on the Rend icon. Same arc as the simple attack, starting at the body edge. Direct damage is half the simple swing, rounded to a whole number (25 becomes 13), then the usual damage roll. The swing is red. Each target hit gets a bleed of 45 damage over 12 seconds, one whole-number tick per second (nine ticks of 4, then three of 3), and the Rend icon in that actor's debuffs, at half the previous size, restoring clockwise like an ability cooldown. A new Rend on the same target restarts that bleed. The sword icons tilt 30° to the right, and Rend's icon has a blood drop under the tip.
 
 - [X] **Player stats**
   State: completed

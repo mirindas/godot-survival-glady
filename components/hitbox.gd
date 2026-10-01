@@ -8,6 +8,7 @@ const CRIT_COLOR := Color("ff7a00")
 const CRIT_FONT_SCALE := 1.5
 
 signal hit_landed
+signal struck(hurtbox: Hurtbox)
 signal finished
 
 @export_range(1, 500) var damage: int = 25
@@ -168,6 +169,7 @@ func _try_hit(area: Area2D) -> void:
 		_spawn_floating_text(hurtbox, str(applied), CRIT_COLOR, crit_size, true)
 	else:
 		_spawn_floating_text(hurtbox, str(applied), damage_color, damage_font_size)
+	struck.emit(hurtbox)
 	hit_landed.emit()
 
 
