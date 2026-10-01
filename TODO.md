@@ -86,6 +86,10 @@ Top-down 2D hack and slash. Checkboxes mark the work itself: `[X]` done, `[ ]` n
   State: completed
   `res://enemies/boss/boss.tscn` is a grunt scaled to 5 times the player body (180×240). The first boss has 350 health and 36 damage. Each later boss has 13% more health and 2% more damage than the one before, rounded. It moves at 60% of the grunt's speed. Its swing starts at the grunt's attack range, measured from the boss body. Waves 5, 10, 15, and so on spawn that boss alone. Killing it waits 10 seconds, then the next grunt wave starts. Grunt counts keep growing from the last grunt wave, so a boss wave does not reset them.
 
+- [X] **Player stats**
+  State: completed
+  `StatsComponent` on the player. Crit and dodge start at 5% and cannot go below zero. A crit doubles that hit after the damage roll, and its number is larger, italic, and orange. A dodge drops an enemy hit before damage, armor loss, or knockback, and the player shows "dodge" where the damage number would have been. Speed starts at 0%. Above zero moves faster, below zero moves slower, and the result never reverses movement. The HUD shows the three values. The arena wires the signal.
+
 - [X] **Headless smoke run**
   State: completed
   Imported and ran the arena in Godot 4.7.2 headless. The project loaded with no script errors.

@@ -11,6 +11,7 @@ var _rest_banner := false
 @onready var _armor_bar: ArmorBar = %ArmorBar
 @onready var _armor_label: Label = %ArmorLabel
 @onready var _wave_label: Label = %WaveLabel
+@onready var _stats_label: Label = %StatsLabel
 @onready var _wave_banner: Label = %WaveBanner
 @onready var _hint_label: Label = %HintLabel
 @onready var _defeated_label: Label = %DefeatedLabel
@@ -29,6 +30,23 @@ func set_health(current: int, maximum: int) -> void:
 func set_armor(current: int, maximum: int) -> void:
 	_armor_bar.set_fraction(current, maximum)
 	_armor_label.text = "%d / %d" % [current, maximum]
+
+
+func set_stats(crit: float, dodge: float, speed: float) -> void:
+	_stats_label.text = "Crit %s   Dodge %s   Speed %s" % [
+		_percent(crit, false),
+		_percent(dodge, false),
+		_percent(speed, true),
+	]
+
+
+func _percent(value: float, signed: bool) -> String:
+	var number := "%0.1f" % value
+	if number.ends_with(".0"):
+		number = number.trim_suffix(".0")
+	if signed and value > 0.0:
+		number = "+" + number
+	return number + "%"
 
 
 func set_wave(wave: int, boss: bool = false) -> void:

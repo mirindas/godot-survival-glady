@@ -6,17 +6,21 @@ extends Node2D
 const LIFE_SECONDS := 0.7
 const RISE_SPEED_ID: StringName = &"damage_number_rise_speed"
 
-var _amount := 0
+const ITALIC_SHEAR := 0.28
+
+var _text := ""
 var _color := Color.WHITE
 var _font_size := 28
+var _italic := false
 var _spawn_at := Vector2.ZERO
 var _age := 0.0
 
 
-func setup(amount: int, color: Color, font_size: int, world_position: Vector2) -> void:
-	_amount = amount
+func show_text(text: String, color: Color, font_size: int, world_position: Vector2, italic: bool = false) -> void:
+	_text = text
 	_color = color
 	_font_size = font_size
+	_italic = italic
 	_spawn_at = world_position
 	z_index = 20
 
@@ -36,8 +40,17 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	var font := ThemeDB.fallback_font
-	var text := str(_amount)
-	var text_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size)
+	var text_size := font.get_string_size(_text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size)
 	var origin := Vector2(-text_size.x * 0.5, 0.0)
-	draw_string(font, origin + Vector2(1, 1), text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, Color(0, 0, 0, 0.9))
-	draw_string(font, origin, text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, _color)
+	if _italic:
+		origin.x -= ITALIC_SHEAR * float(_font_size) * 0.35
+		draw_set_transform_matrix(Transform2D(Vector2(1, 0), Vector2(-ITALIC_SHEAR, 1), origin))
+		_draw_text(font, Vector2.ZERO)
+		draw_set_transform_matrix(Transform2D.IDENTITY)
+		return
+	_draw_text(font, origin)
+
+
+func _draw_text(font: Font, origin: Vector2) -> void:
+	draw_string(font, origin + Vector2(1, 1), _text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, Color(0, 0, 0, 0.9))
+	draw_string(font, origin, _text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, _color)

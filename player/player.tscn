@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://e2playergdscr" path="res://player/player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://b7healthcomp1" path="res://components/health_component.gd" id="2_health"]
 [ext_resource type="Script" uid="uid://d4armorcomp01" path="res://components/armor_component.gd" id="2_armor"]
+[ext_resource type="Script" uid="uid://e5statscomp01" path="res://components/stats_component.gd" id="2_stats"]
 [ext_resource type="Script" uid="uid://d9hurtboxcomp" path="res://components/hurtbox.gd" id="3_hurtbox"]
 [ext_resource type="Script" uid="uid://c8hitboxcomp2" path="res://components/hitbox.gd" id="4_hitbox"]
 [ext_resource type="Script" uid="uid://a9knockbackgd1" path="res://components/knockback.gd" id="5_knock"]
@@ -33,7 +34,11 @@ script = ExtResource("2_health")
 unique_name_in_owner = true
 script = ExtResource("2_armor")
 
-[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health", "armor")]
+[node name="StatsComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_stats")
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health", "armor", "stats")]
 collision_layer = 32
 collision_mask = 0
 monitoring = false
@@ -41,21 +46,23 @@ monitorable = true
 script = ExtResource("3_hurtbox")
 health = NodePath("../HealthComponent")
 armor = NodePath("../ArmorComponent")
+stats = NodePath("../StatsComponent")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("RectangleShape2D_hurt")
 
-[node name="SimpleHitbox" type="Area2D" parent="."]
+[node name="SimpleHitbox" type="Area2D" parent="." node_paths=PackedStringArray("stats")]
 unique_name_in_owner = true
 collision_layer = 8
 collision_mask = 16
 monitoring = false
 monitorable = false
 script = ExtResource("4_hitbox")
+stats = NodePath("../StatsComponent")
 damage_color = Color(1, 0.882, 0.29, 1)
 damage_font_size = 28
 
-[node name="HeavyHitbox" type="Area2D" parent="."]
+[node name="HeavyHitbox" type="Area2D" parent="." node_paths=PackedStringArray("stats")]
 unique_name_in_owner = true
 position = Vector2(90, 0)
 collision_layer = 8
@@ -63,6 +70,7 @@ collision_mask = 16
 monitoring = false
 monitorable = false
 script = ExtResource("4_hitbox")
+stats = NodePath("../StatsComponent")
 damage = 45
 damage_color = Color(1, 0.62, 0.22, 1)
 damage_font_size = 36

@@ -7,15 +7,23 @@ signal hit_received(from_position: Vector2)
 
 @export var health: HealthComponent
 @export var armor: ArmorComponent
+@export var stats: StatsComponent
+
+## True when the latest receive_hit was a dodge. The attacker reads this immediately.
+var dodged_hit := false
 
 
 ## Returns the damage actually applied after armor. 0 means the hit did not land.
 ## armor_reduction is stripped from the pool before this hit is mitigated.
 func receive_hit(amount: int, from_position: Vector2, armor_reduction: int = 0) -> int:
+	dodged_hit = false
 	if health == null:
 		push_error("Hurtbox '%s' has no HealthComponent." % name)
 		return 0
 	if health.current_health <= 0 or amount <= 0:
+		return 0
+	if stats != null and stats.roll_dodge():
+		dodged_hit = true
 		return 0
 	if armor != null and armor_reduction > 0:
 		armor.reduce(armor_reduction)

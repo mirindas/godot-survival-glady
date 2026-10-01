@@ -5,7 +5,7 @@ extends CharacterBody2D
 ## Heavy attack is a longer frontal swing that plants the body until it ends.
 ## Using it starts a cooldown that ignores further heavy presses.
 ## Each swing locks the cursor direction from the moment it starts.
-## Health and hit detection live on child nodes.
+## Health, armor, and stats live on child nodes.
 
 signal attack_landed
 signal simple_attack_started(duration: float)
@@ -36,6 +36,7 @@ const SIMPLE_AIM_RADIUS_DEGREES := 45.0
 
 @onready var health: HealthComponent = %HealthComponent as HealthComponent
 @onready var armor: ArmorComponent = %ArmorComponent as ArmorComponent
+@onready var stats: StatsComponent = %StatsComponent as StatsComponent
 @onready var _simple_hitbox: Hitbox = %SimpleHitbox as Hitbox
 @onready var _heavy_hitbox: Hitbox = %HeavyHitbox as Hitbox
 @onready var _hurtbox: Hurtbox = $Hurtbox as Hurtbox
@@ -114,7 +115,7 @@ func _physics_process(delta: float) -> void:
 			_update_locomotion(delta)
 		State.SIMPLE_ATTACK:
 			var direction := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
-			_move(delta, direction * Units.px(move_speed))
+			_move(delta, direction * _travel_speed())
 		State.HEAVY_ATTACK:
 			_move(delta, Vector2.ZERO)
 		State.DEAD:
@@ -127,7 +128,7 @@ func _update_locomotion(delta: float) -> void:
 		_change_state(State.MOVE)
 	else:
 		_change_state(State.IDLE)
-	_move(delta, direction * Units.px(move_speed))
+	_move(delta, direction * _travel_speed())
 	if _heavy_requested:
 		_heavy_requested = false
 		_simple_requested = false
@@ -215,6 +216,11 @@ func _cancel_attacks() -> void:
 	_heavy_requested = false
 	_simple_hitbox.cancel()
 	_heavy_hitbox.cancel()
+
+
+func _travel_speed() -> float:
+	var scale: float = 1.0 if stats == null else stats.speed_scale()
+	return Units.px(move_speed) * scale
 
 
 func _move(delta: float, desired: Vector2) -> void:

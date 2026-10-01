@@ -3,16 +3,22 @@ extends Area2D
 ## Melee volume. play() opens it for the active frames of one swing.
 ## One swing damages each overlapping hurtbox at most once.
 
+const DODGE_COLOR := Color("b7ecff")
+const CRIT_COLOR := Color("ff7a00")
+const CRIT_FONT_SCALE := 1.5
+
 signal hit_landed
 signal finished
 
 @export_range(1, 500) var damage: int = 25
 @export_range(0, 50) var armor_reduction: int = 0
+@export var stats: StatsComponent
 @export_group("Damage number")
 @export var damage_color: Color = Color("ffe14a")
 @export_range(8, 72, 1) var damage_font_size: int = 28
 
 var _already_hit: Array[Hurtbox] = []
+var _last_roll_crit := false
 var _playing := false
 var _time := 0.0
 var _duration := 0.0
@@ -149,19 +155,32 @@ func _try_hit(area: Area2D) -> void:
 	if hurtbox == null or _already_hit.has(hurtbox):
 		return
 	_already_hit.append(hurtbox)
-	var applied := hurtbox.receive_hit(_rolled_damage(), _attacker_position(), armor_reduction)
+	var rolled := _rolled_damage()
+	var crit := _last_roll_crit
+	var applied := hurtbox.receive_hit(rolled, _attacker_position(), armor_reduction)
+	if hurtbox.dodged_hit:
+		_spawn_floating_text(hurtbox, "dodge", DODGE_COLOR, damage_font_size)
+		return
 	if applied <= 0:
 		return
-	_spawn_damage_number(hurtbox, applied)
+	if crit:
+		var crit_size := roundi(float(damage_font_size) * CRIT_FONT_SCALE)
+		_spawn_floating_text(hurtbox, str(applied), CRIT_COLOR, crit_size, true)
+	else:
+		_spawn_floating_text(hurtbox, str(applied), damage_color, damage_font_size)
 	hit_landed.emit()
 
 
 func _rolled_damage() -> int:
 	var scale := randf_range(0.95, 1.05)
-	return maxi(roundi(float(damage) * scale), 1)
+	var amount := maxi(roundi(float(damage) * scale), 1)
+	_last_roll_crit = stats != null and stats.roll_crit()
+	if _last_roll_crit:
+		amount *= 2
+	return amount
 
 
-func _spawn_damage_number(hurtbox: Hurtbox, amount: int) -> void:
+func _spawn_floating_text(hurtbox: Hurtbox, text: String, color: Color, font_size: int, italic: bool = false) -> void:
 	var body := hurtbox.get_parent() as Node2D
 	var host: Node = body.get_parent() if body != null else null
 	if host == null:
@@ -172,7 +191,7 @@ func _spawn_damage_number(hurtbox: Hurtbox, amount: int) -> void:
 	var number := DamageNumber.new()
 	var spread := Units.measure(&"damage_number_spread")
 	var lift := Units.measure(&"damage_number_lift")
-	number.setup(amount, damage_color, damage_font_size, origin + Vector2(randf_range(-spread, spread), -lift))
+	number.show_text(text, color, font_size, origin + Vector2(randf_range(-spread, spread), -lift), italic)
 	host.add_child.call_deferred(number)
 
 
